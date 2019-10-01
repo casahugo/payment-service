@@ -14,7 +14,7 @@ services:
             context: ..
             dockerfile: docker/php/Dockerfile
             args:
-                UID: "${DOCKER_UID}"
+                UID: "${DOCKER_UID:-1000}"
         volumes:
             - ..:/var/www/html
 
@@ -30,4 +30,3 @@ services:
 
 volumes:
     mysql:
-    rabbitmq:
