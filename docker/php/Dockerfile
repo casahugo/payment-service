@@ -26,3 +26,5 @@ RUN echo "date.timezone = Europe/Paris" > /usr/local/etc/php/conf.d/timezone.ini
 RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini
 
 USER wizaplace
+
+WORKDIR /var/www/html
