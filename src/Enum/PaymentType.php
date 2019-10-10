@@ -6,14 +6,10 @@
  */
 declare(strict_types=1);
 
-namespace App\Gateway\Lemonway;
+namespace App\Enum;
 
-use Faker\Factory;
 
-abstract class AbstractGateway
+class PaymentType
 {
-    public function getFaker()
-    {
-        return Factory::create();
-    }
+    public const CREDITCARD = 'creditcard';
 }

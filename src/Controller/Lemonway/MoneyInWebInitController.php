@@ -38,6 +38,6 @@ class MoneyInWebInitController
             throw new BadRequestHttpException($exception->getMessage(), $exception);
         }
 
-        return new JsonResponse($response);
+        return new JsonResponse($response->toArray());
     }
 }

@@ -41,6 +41,13 @@ class Transaction
         return $this->id;
     }
 
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getReference(): ?string
     {
         return $this->reference;
@@ -79,12 +86,12 @@ class Transaction
 
     public function getData(): ?string
     {
-        return $this->data;
+        return unserialize($this->data);
     }
 
-    public function setData(?string $data): self
+    public function setData(?array $data): self
     {
-        $this->data = $data;
+        $this->data = serialize($data);
 
         return $this;
     }

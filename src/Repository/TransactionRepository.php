@@ -19,6 +19,14 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
+    public function save(Transaction $transaction): Transaction
+    {
+        $this->getEntityManager()->persist($transaction);
+        $this->getEntityManager()->flush($transaction);
+
+        return $transaction;
+    }
+
     // /**
     //  * @return Transaction[] Returns an array of Transaction objects
     //  */

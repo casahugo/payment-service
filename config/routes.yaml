@@ -5,3 +5,8 @@
 lemonway_moneyinwebinit:
     path: /api/v1/lemonway/MoneyInWebInit
     controller: App\Controller\Lemonway\MoneyInWebInitController
+
+lemonway_moneyintoken:
+    path: /api/v1/lemonway
+    methods: [GET]
+    controller: App\Controller\Lemonway\MoneyInTokenController
