@@ -5,6 +5,9 @@
     "doctrine/instantiator": {
         "version": "1.2.0"
     },
+    "fzaninotto/faker": {
+        "version": "v1.8.0"
+    },
     "jean85/pretty-package-versions": {
         "version": "1.2"
     },
@@ -240,6 +243,9 @@
     },
     "symfony/mime": {
         "version": "v4.3.4"
+    },
+    "symfony/options-resolver": {
+        "version": "v4.3.5"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.12.0"

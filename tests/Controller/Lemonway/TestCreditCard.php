@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Lemonway;
 
-use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TestCreditCard extends WebTestCase
@@ -17,7 +16,6 @@ class TestCreditCard extends WebTestCase
 
     public function testInitCreditCard(): void
     {
-        /** @var Client $client */
         $client = static::createClient();
         $client->enableProfiler();
 
@@ -28,14 +26,15 @@ class TestCreditCard extends WebTestCase
                 'wallet' => 123456,
                 'amountTot' => 50.0,
                 'wkToken' => 'tokenValid',
-                'returnUrl' => urlencode('http://website.loc/returnUrl'),
-                'errorUrl' => urlencode('http://website.loc/errorUrl'),
-                'cancelUrl' => urlencode('http://website.loc/cancelUrl'),
+                'returnUrl' => urlencode('http://example.com/returnUrl'),
+                'errorUrl' => urlencode('http://example.com/errorUrl'),
+                'cancelUrl' => urlencode('http://example.com/cancelUrl'),
                 'amountCom' => 0.,
                 'comment' => 'Comments',
                 'autoCommission' => '0',
                 'isPreAuth' => '0',
                 'delayedDays' => '0',
+                'email' => 'contact@example.com'
             ])
         );
 
