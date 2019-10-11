@@ -84,7 +84,7 @@ class Transaction
         return $this;
     }
 
-    public function getData(): ?string
+    public function getData(): ?array
     {
         return unserialize($this->data);
     }

@@ -14,8 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class MoneyInWebInitController
+class GetMoneyInTransDetailsController
 {
     /** @var Lemonway  */
     private $lemonway;
@@ -28,13 +29,17 @@ class MoneyInWebInitController
     public function __invoke(Request $request): Response
     {
         try {
-            $response = $this->lemonway->getResponseInitCreditCard($request);
+            $response = $this->lemonway->getTransactionDetails($request);
         } catch (\Throwable $exception) {
             if (preg_match('/(wlLogin|wlPass)/', $exception->getMessage())) {
                 throw new AccessDeniedHttpException($exception->getMessage(), $exception);
             }
 
             throw new BadRequestHttpException($exception->getMessage(), $exception);
+        }
+
+        if (is_null($response)) {
+            throw new NotFoundHttpException('Non-existent transaction');
         }
 
         return new JsonResponse($response->toArray());

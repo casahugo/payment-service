@@ -21,10 +21,10 @@ class LemonwayResolver extends OptionsResolver
         ;
     }
 
-    public function resolveCreditCard(array $data)
+    public function resolveCreditCard(array $data): array
     {
         $this
-            ->setDefined(['amountCom', 'comment', 'delayedDays', 'email'])
+            ->setDefined(['amountCom', 'comment', 'delayedDays', 'email', 'language'])
             ->setRequired(['wallet', 'amountTot', 'wkToken', 'returnUrl', 'errorUrl', 'cancelUrl'])
             ->setDefaults([
                 'useRegisteredCard' => 0,
@@ -37,12 +37,24 @@ class LemonwayResolver extends OptionsResolver
         return $this->resolve($data);
     }
 
+    public function resolveTransactionDetails(array $data): array
+    {
+        $this->setDefined([
+            'transactionId',
+            'transactionComment',
+            'transactionMerchantToken',
+            'startDate',
+            'endDate'
+        ]);
+
+        return $this->resolve($data);
+    }
+
     private function getDefaultParams(): array
     {
         return [
             'wlPass',
             'wlLogin',
-            'language',
             'version',
             'walletIp',
             'walletUa',

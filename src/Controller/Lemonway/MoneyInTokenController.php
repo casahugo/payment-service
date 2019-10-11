@@ -26,12 +26,15 @@ class MoneyInTokenController extends AbstractController
 
     public function __invoke(Request $request): Response
     {
-        $token = $request->query->get('moneyintoken');
+        $token = $request->query->get('moneyInToken');
 
-        if (is_null($token)) {
-            throw new BadRequestHttpException('missing moneyintoken');
+        if (false === $this->lemonway->verifyToken($token)) {
+            throw new BadRequestHttpException('token is invalid.');
         }
 
-        return $this->render('lemonway/creditcard.html.twig');
+        return $this->render('lemonway/creditcard.html.twig', [
+            'token' => $token,
+            'action' => $this->generateUrl('lemonway_postmoneyintoken')
+        ]);
     }
 }

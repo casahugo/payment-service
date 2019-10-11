@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace App\Gateway\Lemonway\DTO;
 
-
 class ResponseCreditCard
 {
     /** @var string  */
@@ -30,13 +29,15 @@ class ResponseCreditCard
     public function toArray(): array
     {
         return [
-            'MONEYINWEB' => [
-                'TOKEN' => $this->reference,
-                'ID' => $this->id,
-                'CARD' => [
-                    'ID' => $this->cardNumber,
+            'd' => [
+                'MONEYINWEB' => [
+                    'TOKEN' => $this->reference,
+                    'ID' => $this->id,
+                    'CARD' => [
+                        'ID' => $this->cardNumber,
+                    ],
+                    'REDIRECTURL' => null,
                 ],
-                'REDIRECTURL' => null,
             ],
         ];
     }

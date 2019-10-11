@@ -17,6 +17,8 @@ services:
                 UID: "${DOCKER_UID:-1000}"
         volumes:
             - ..:/var/www/html
+        extra_hosts:
+            - "wizaplace.loc:172.17.0.1"
 
     mysql:
         build:
