@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+set -e
+
+readonly PROJECT_DIRECTORY=$(realpath $(dirname $(realpath $0))/..)
+
+cd ${PROJECT_DIRECTORY}
+
+if [[ -f .env.local ]]; then
+    source ./.env.local
+fi
+
+if [[ -z ${APP_ENV} ]]; then
+    source ./.env
+fi
+
+if [[ "${APP_ENV}" = "prod" ]]; then
+    composer install --no-dev --classmap-authoritative
+else
+    composer install
+fi
+
+bin/console cache:clear
+bin/console doctrine:database:create --if-not-exists
+bin/console doctrine:migrations:migrate --no-interaction
+bin/console assets:install
