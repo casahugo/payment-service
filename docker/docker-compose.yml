@@ -17,6 +17,8 @@ services:
                 UID: "${DOCKER_UID:-1000}"
         volumes:
             - ..:/var/www/html
+        extra_hosts:
+            - "wizaplace.loc:172.17.0.1"
 
     mysql:
         build:
@@ -25,6 +27,8 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: payment
+        ports:
+            - "${MYSQL_PORT:-4406}:3306"
         volumes:
             - mysql:/var/lib/mysql
 

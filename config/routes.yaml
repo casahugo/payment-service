@@ -1,7 +1,23 @@
-#in0dex:
+#index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
 lemonway_moneyinwebinit:
     path: /api/v1/lemonway/MoneyInWebInit
+    methods: [POST]
     controller: App\Controller\Lemonway\MoneyInWebInitController
+
+lemonway_moneyintoken:
+    path: /api/v1/lemonway
+    methods: [GET]
+    controller: App\Controller\Lemonway\MoneyInTokenController
+
+lemonway_postmoneyintoken:
+    path: /api/v1/lemonway
+    methods: [POST]
+    controller: App\Controller\Lemonway\PostMoneyInTokenController
+
+lemonway_getmoneyintransdetails:
+    path: /api/v1/lemonway/GetMoneyInTransDetails
+    methods: [POST]
+    controller: App\Controller\Lemonway\GetMoneyInTransDetailsController

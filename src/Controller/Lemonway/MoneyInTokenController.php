@@ -9,13 +9,12 @@ declare(strict_types=1);
 namespace App\Controller\Lemonway;
 
 use App\Gateway\Lemonway\Lemonway;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class MoneyInWebInitController
+class MoneyInTokenController extends AbstractController
 {
     /** @var Lemonway  */
     private $lemonway;
@@ -27,16 +26,15 @@ class MoneyInWebInitController
 
     public function __invoke(Request $request): Response
     {
-        try {
-            $response = $this->lemonway->getResponseInitCreditCard($request);
-        } catch (\Throwable $exception) {
-            if (preg_match('/(wlLogin|wlPass)/', $exception->getMessage())) {
-                throw new AccessDeniedHttpException($exception->getMessage(), $exception);
-            }
+        $token = $request->query->get('moneyInToken');
 
-            throw new BadRequestHttpException($exception->getMessage(), $exception);
+        if (false === $this->lemonway->verifyToken($token)) {
+            throw new BadRequestHttpException('token is invalid.');
         }
 
-        return new JsonResponse($response->toArray());
+        return $this->render('lemonway/creditcard.html.twig', [
+            'token' => $token,
+            'action' => $this->generateUrl('lemonway_postmoneyintoken')
+        ]);
     }
 }
