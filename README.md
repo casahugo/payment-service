@@ -31,6 +31,20 @@ Commands list:
 
 ## configuration
 
+### In your docker project
+Retrieve bridge IP
+```
+docker inspect bridge
+> "Gateway": "172.17.0.1"
+```
+
+add in your php container
+```
+extra_hosts:
+    - "payment.loc:172.17.0.1"
+```
+
+
 ### Lemonway 
 ```
 client_login: login
