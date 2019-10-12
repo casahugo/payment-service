@@ -14,18 +14,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GetMoneyInTransDetailsController
 {
-    /** @var Lemonway  */
-    private $lemonway;
-
-    public function __construct(Lemonway $lemonway)
-    {
-        $this->lemonway = $lemonway;
-    }
-
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, Lemonway $lemonway): Response
     {
         try {
-            $response = $this->lemonway->getTransactionDetails($request);
+            $response = $lemonway->getTransactionDetails($request);
         } catch (\Throwable $exception) {
             if (preg_match('/(wlLogin|wlPass)/', $exception->getMessage())) {
                 throw new AccessDeniedHttpException($exception->getMessage(), $exception);

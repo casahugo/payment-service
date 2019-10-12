@@ -10,7 +10,7 @@ interface GatewayInterface
 {
     public function getResponseInitCreditCard(Request $request);
 
-    public function getResponseCreditCardPayment(string $token, int $erreur = 0);
+    public function getRequestCreditCardPayment(string $token, int $error = 0);
 
     public function getTransactionDetails(Request $request);
 

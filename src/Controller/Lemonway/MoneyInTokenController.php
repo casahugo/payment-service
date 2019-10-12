@@ -12,19 +12,11 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class MoneyInTokenController extends AbstractController
 {
-    /** @var Lemonway  */
-    private $lemonway;
-
-    public function __construct(Lemonway $lemonway)
-    {
-        $this->lemonway = $lemonway;
-    }
-
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, Lemonway $lemonway): Response
     {
         $token = $request->query->get('moneyInToken');
 
-        if (false === $this->lemonway->verifyToken($token)) {
+        if (false === $lemonway->verifyToken($token)) {
             throw new BadRequestHttpException('token is invalid.');
         }
 

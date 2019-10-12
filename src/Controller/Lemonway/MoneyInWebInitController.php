@@ -13,18 +13,10 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class MoneyInWebInitController
 {
-    /** @var Lemonway  */
-    private $lemonway;
-
-    public function __construct(Lemonway $lemonway)
-    {
-        $this->lemonway = $lemonway;
-    }
-
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, Lemonway $lemonway): Response
     {
         try {
-            $response = $this->lemonway->getResponseInitCreditCard($request);
+            $response = $lemonway->getResponseInitCreditCard($request);
         } catch (\Throwable $exception) {
             if (preg_match('/(wlLogin|wlPass)/', $exception->getMessage())) {
                 throw new AccessDeniedHttpException($exception->getMessage(), $exception);

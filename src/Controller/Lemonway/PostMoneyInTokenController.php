@@ -4,33 +4,34 @@ declare(strict_types=1);
 
 namespace App\Controller\Lemonway;
 
+use App\Gateway\Lemonway\DTO\RequestCreditCardPayment;
 use App\Gateway\Lemonway\Lemonway;
 use GuzzleHttp\Client;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class PostMoneyInTokenController
 {
-    /** @var Lemonway */
-    private $lemonway;
-
-    public function __construct(Lemonway $lemonway)
+    public function __invoke(Request $request, Lemonway $lemonway): RedirectResponse
     {
-        $this->lemonway = $lemonway;
-    }
-
-    public function __invoke(Request $request): RedirectResponse
-    {
-        $token  = $request->request->get('token');
+        $token  = $request->request->get('token', 'invalid');
         $error  = $request->request->getInt('error');
 
-        $response = $this->lemonway->getResponseCreditCardPayment($token, $error);
+        $request = $lemonway->getRequestCreditCardPayment($token, $error);
 
-        // Instant Payment Notification
         if ($error === 0) {
-            (new Client())->post($response->getEndpoint(), $response->toArray());
+            $this->notify($request);
         }
 
-        return new RedirectResponse($response->getRedirect());
+        return new RedirectResponse((string) $request->getRedirect());
+    }
+
+    private function notify(RequestCreditCardPayment $requestCreditCardPayment): ResponseInterface
+    {
+        return (new Client())->post(
+            $requestCreditCardPayment->getEndpoint(),
+            $requestCreditCardPayment->toArray()
+        );
     }
 }

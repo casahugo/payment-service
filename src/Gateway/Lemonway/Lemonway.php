@@ -14,6 +14,7 @@ use App\Gateway\Lemonway\DTO\RequestCreditCardPayment;
 use App\Gateway\Lemonway\DTO\ResponseTransactionDetails;
 use App\Repository\TransactionRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class Lemonway extends AbstractGateway implements GatewayInterface
 {
@@ -56,12 +57,17 @@ final class Lemonway extends AbstractGateway implements GatewayInterface
         );
     }
 
-    public function getResponseCreditCardPayment(string $token, int $erreur = 0): RequestCreditCardPayment
+    public function getRequestCreditCardPayment(string $token, int $error = 0): RequestCreditCardPayment
     {
         $transaction = $this->repository->findOneBy(['reference' => $token]);
+
+        if (false === $transaction instanceof Transaction) {
+            throw new NotFoundHttpException('Transaction not found.');
+        }
+
         $data = $transaction->getData();
 
-        if ($erreur === 1) {
+        if ($error === 1) {
             return new RequestCreditCardPayment($data['errorUrl'], $transaction->getId(), $transaction->getReference());
         }
 
