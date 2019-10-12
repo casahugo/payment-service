@@ -1,0 +1,14 @@
+parameters:
+    level: 6
+    paths:
+        - src/
+    # Si quelqu'un trouve comment lui indiquer que ce répertoire n'a pas le même namespace que les autres dans src...
+    excludes_analyse:
+        - src/Migrations/
+    ignoreErrors: []
+    symfony:
+        container_xml_path: %rootDir%/../../../var/cache/dev/srcApp_KernelDevDebugContainer.xml
+
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon

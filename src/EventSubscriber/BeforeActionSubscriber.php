@@ -1,9 +1,5 @@
 <?php
-/**
- * @author      Wizacha DevTeam <dev@wizacha.com>
- * @copyright   Copyright (c) Wizacha
- * @license     Proprietary
- */
+
 declare(strict_types=1);
 
 namespace App\EventSubscriber;
@@ -38,5 +34,4 @@ class BeforeActionSubscriber implements EventSubscriberInterface
 
         $request->request->replace(is_array($data) ? $data : array());
     }
-
 }

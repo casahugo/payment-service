@@ -1,0 +1,84 @@
+version: '2.1'
+executors:
+  php:
+    docker:
+      - image: php:7.3.8-cli-alpine
+    working_directory: ~/repo
+
+jobs:
+  composer:
+    executor: php
+    steps:
+      - run:
+          name: Install alpine requirements for checkout
+          command: apk add git openssh-client curl
+      - checkout
+      - restore_cache:
+          key: composer-{{ checksum "composer.json" }}-{{ checksum "composer.lock" }}
+      - run:
+          name: composer
+          command: |
+            if [[ ! -f vendor/autoload.php ]]; then
+                curl https://getcomposer.org/composer.phar --location --silent  --output /usr/bin/composer; \
+                chmod +x /usr/bin/composer; \
+                composer global require hirak/prestissimo; \
+                composer install --no-progress --no-interaction; \
+            fi
+      - save_cache:
+          key: composer-{{ checksum "composer.json" }}-{{ checksum "composer.lock" }}
+          paths:
+            - ./vendor
+      - persist_to_workspace:
+          root: .
+          paths:
+            - vendor
+
+  phpstancs:
+    executor: php
+    steps:
+      - run:
+          name: Install alpine requirements for checkout
+          command: apk add git openssh-client curl
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Cache warmup
+          command: bin/console cache:warmup -e dev
+      - run:
+          name: phpstan
+          command: vendor/bin/phpstan
+      - run:
+          name: phpcs
+          command: vendor/bin/phpcs
+
+
+  phpunit:
+    executor: php
+    steps:
+      - run:
+          name: Install alpine requirements for checkout.
+          command: apk add git openssh-client curl
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Cache warmup
+          command: bin/console cache:warmup -e test
+      - run:
+          name: phpunit
+          command: vendor/bin/phpunit
+      - store_test_results:
+          path: phpunit-result
+
+workflows:
+  version: '2.1'
+  Code quality:
+    jobs:
+      - composer
+      - phpstancs:
+          requires:
+            - composer
+      - phpunit:
+          requires:
+            - composer
