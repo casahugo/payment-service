@@ -16,3 +16,20 @@ install:
 shell:
 	cd docker; \
 	docker-compose exec php bash;
+
+make check:
+	make test
+	make phpstan
+	make phpcs
+
+test:
+	cd docker; \
+    docker-compose exec php ./vendor/bin/phpunit;
+
+phpstan:
+	cd docker; \
+	docker-compose exec php ./vendor/bin/phpstan analyse --ansi -c phpstan.neon;
+
+phpcs:
+	cd docker; \
+	docker-compose exec php ./vendor/bin/phpcs;

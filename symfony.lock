@@ -162,6 +162,9 @@
     "phpstan/phpstan": {
         "version": "0.11.16"
     },
+    "phpstan/phpstan-doctrine": {
+        "version": "0.11.6"
+    },
     "phpstan/phpstan-symfony": {
         "version": "0.11.6"
     },
@@ -255,9 +258,6 @@
             "ref": "0dc9cceda799fd3a08b96987e176a261028a3709"
         }
     },
-    "symfony/browser-kit": {
-        "version": "v4.3.4"
-    },
     "symfony/cache": {
         "version": "v4.3.4"
     },
@@ -288,9 +288,6 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v4.3.5"
-    },
-    "symfony/dom-crawler": {
-        "version": "v4.3.4"
     },
     "symfony/dotenv": {
         "version": "v4.3.4"
