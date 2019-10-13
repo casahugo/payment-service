@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Gateway\Lemonway\DTO;
+namespace App\Lemonway\DTO;
 
-class RequestCreditCardPayment
+use App\ArrayableInterface;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\UriInterface;
+
+class RequestCreditCardPayment implements ArrayableInterface
 {
     /** @var int  */
     private $id;
@@ -22,14 +26,14 @@ class RequestCreditCardPayment
         $this->reference = $reference;
     }
 
-    public function getEndpoint(): string
+    public function getEndpoint(): UriInterface
     {
-        return urldecode($this->endpoint);
+        return new Uri(urldecode($this->endpoint));
     }
 
-    public function getRedirect(): string
+    public function getRedirect(): UriInterface
     {
-        return urldecode($this->endpoint . http_build_query($this->toArray()));
+        return new Uri(urldecode($this->endpoint . http_build_query($this->toArray())));
     }
 
     public function toArray(): array

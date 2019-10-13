@@ -17,7 +17,7 @@ shell:
 	cd docker; \
 	docker-compose exec php bash;
 
-make check:
+check:
 	make test
 	make phpstan
 	make phpcs

@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace App\Gateway;
 
-use Symfony\Component\HttpFoundation\Request;
-
 interface GatewayInterface
 {
-    public function getResponseInitCreditCard(Request $request);
+    public function getResponseInitCreditCard(array $data);
 
-    public function getResponseCreditCardPayment(string $token, int $erreur = 0);
+    public function getRequestCreditCardPayment(string $token, int $error = 0);
 
-    public function getTransactionDetails(Request $request);
-
-    public function verifyToken(string $token);
+    public function getTransactionDetails(TransactionInterface $transactionDetails);
 }
