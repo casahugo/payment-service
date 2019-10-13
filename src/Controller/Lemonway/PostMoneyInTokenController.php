@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Lemonway;
 
-use App\Gateway\Lemonway\DTO\RequestCreditCardPayment;
-use App\Gateway\Lemonway\Lemonway;
+use App\Lemonway\DTO\RequestCreditCardPayment;
+use App\Lemonway\Lemonway;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;

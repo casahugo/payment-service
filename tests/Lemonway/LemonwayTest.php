@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Gateway\Lemonway;
+namespace App\Tests\Lemonway;
 
 use App\Entity\Transaction;
-use App\Gateway\Lemonway\DTO\ResponseCreditCard;
-use App\Gateway\Lemonway\Lemonway;
-use App\Gateway\Lemonway\LemonwayResolver;
+use App\Lemonway\DTO\ResponseCreditCard;
+use App\Lemonway\Lemonway;
+use App\Lemonway\LemonwayResolver;
 use App\Repository\TransactionRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,9 +27,9 @@ class LemonwayTest extends TestCase
             return $transaction;
         });
 
-        $lemonway = new Lemonway($repository, new LemonwayResolver());
+        $lemonway = new Lemonway($repository);
 
-        $response = $lemonway->getResponseInitCreditCard(new Request([], [
+        $request = new Request([], [
             'p' => array_merge($this->buildRequest(), [
                 'wallet' => 123456,
                 'amountTot' => 50.0,
@@ -44,7 +44,11 @@ class LemonwayTest extends TestCase
                 'delayedDays' => '0',
                 'email' => 'contact@example.com'
             ])
-        ]));
+        ]);
+
+        $response = $lemonway->getResponseInitCreditCard(
+            (new LemonwayResolver())->resolveCreditCard($request->request->get('p'))
+        );
 
         static::assertInstanceOf(ResponseCreditCard::class, $response);
         static::assertEquals(new ResponseCreditCard(static::REFERENCE, 1), $response);
@@ -53,11 +57,11 @@ class LemonwayTest extends TestCase
     public function testErrorAuthentication(): void
     {
         $repository = $this->createMock(TransactionRepository::class);
-        $lemonway = new Lemonway($repository, new LemonwayResolver());
+        $lemonway = new Lemonway($repository);
 
         static::expectException(InvalidOptionsException::class);
 
-        $response = $lemonway->getResponseInitCreditCard(new Request([], [
+        $request = new Request([], [
             'p' => [
                 "wlPass" => "error",
                 "wlLogin" => "login",
@@ -78,7 +82,11 @@ class LemonwayTest extends TestCase
                 'delayedDays' => '0',
                 'email' => 'contact@example.com'
             ]
-        ]));
+        ]);
+
+        $response = $lemonway->getResponseInitCreditCard(
+            (new LemonwayResolver())->resolveCreditCard($request->request->get('p'))
+        );
     }
 
     /** @return string[] */

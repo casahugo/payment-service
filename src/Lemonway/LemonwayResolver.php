@@ -2,24 +2,29 @@
 
 declare(strict_types=1);
 
-namespace App\Gateway\Lemonway;
+namespace App\Lemonway;
 
+use App\Lemonway\DTO\RequestTransactionDetails;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LemonwayResolver extends OptionsResolver
 {
+    public const LOGIN = 'login';
+
+    public const PASS = 'password';
+
     public function __construct()
     {
         $this
             ->setRequired($this->getDefaultParams())
-            ->setAllowedValues('wlPass', [Lemonway::PASS])
-            ->setAllowedValues('wlLogin', [Lemonway::LOGIN])
+            ->setAllowedValues('wlPass', [static::PASS])
+            ->setAllowedValues('wlLogin', [static::LOGIN])
         ;
     }
 
     public function resolveCreditCard(array $data): array
     {
-        $this
+        return $this
             ->setDefined(['amountCom', 'comment', 'delayedDays', 'email', 'language'])
             ->setRequired(['wallet', 'amountTot', 'wkToken', 'returnUrl', 'errorUrl', 'cancelUrl'])
             ->setDefaults([
@@ -28,22 +33,24 @@ class LemonwayResolver extends OptionsResolver
                 'autoCommission' => 0,
                 'registerCard' => 0,
                 'moneyInNature' => 0,
-            ]);
-
-        return $this->resolve($data);
+            ])
+            ->resolve($data)
+        ;
     }
 
-    public function resolveTransactionDetails(array $data): array
+    public function resolveTransactionDetails(array $data): RequestTransactionDetails
     {
-        $this->setDefined([
-            'transactionId',
-            'transactionComment',
-            'transactionMerchantToken',
-            'startDate',
-            'endDate'
-        ]);
-
-        return $this->resolve($data);
+        return new RequestTransactionDetails(
+            $this
+                ->setDefined([
+                    'transactionId',
+                    'transactionComment',
+                    'transactionMerchantToken',
+                    'startDate',
+                    'endDate'
+                ])
+                ->resolve($data)
+        );
     }
 
     private function getDefaultParams(): array

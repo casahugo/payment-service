@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Gateway\Lemonway\DTO;
+namespace App\Lemonway\DTO;
 
 use App\ArrayableInterface;
 use GuzzleHttp\Psr7\Uri;
@@ -28,12 +28,12 @@ class RequestCreditCardPayment implements ArrayableInterface
 
     public function getEndpoint(): UriInterface
     {
-        return new Uri($this->endpoint);
+        return new Uri(urldecode($this->endpoint));
     }
 
     public function getRedirect(): UriInterface
     {
-        return new Uri($this->endpoint . http_build_query($this->toArray()));
+        return new Uri(urldecode($this->endpoint . http_build_query($this->toArray())));
     }
 
     public function toArray(): array

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Gateway\Lemonway\DTO;
+namespace App\Lemonway\DTO;
 
 class ResponseTransactionDetails
 {

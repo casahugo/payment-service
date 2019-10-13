@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Lemonway;
 
-use App\Gateway\Lemonway\Lemonway;
+use App\Lemonway\Lemonway;
+use App\Lemonway\LemonwayResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GetMoneyInTransDetailsController
 {
-    public function __invoke(Request $request, Lemonway $lemonway): Response
+    public function __invoke(Request $request, Lemonway $lemonway, LemonwayResolver $resolver): Response
     {
         try {
-            $response = $lemonway->getTransactionDetails($request);
+            $response = $lemonway->getTransactionDetails(
+                $resolver->resolveTransactionDetails($request->request->get('p'))
+            );
         } catch (\Throwable $exception) {
             if (preg_match('/(wlLogin|wlPass)/', $exception->getMessage())) {
                 throw new AccessDeniedHttpException($exception->getMessage(), $exception);

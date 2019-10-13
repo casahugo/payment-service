@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Gateway;
 
+use App\Lemonway\Lemonway;
+
 class GatewayName
 {
     public const HIPAY = 'HiPay';
 
-    public const LEMONWAY = 'LemonWay';
+    public const LEMONWAY = Lemonway::class;
 
     public const STRIPE = 'Stripe';
 
