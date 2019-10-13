@@ -61,6 +61,11 @@ class User
      */
     private $mobile;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $processorName;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -158,6 +163,18 @@ class User
     public function setBirthday(string $birthday): self
     {
         $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    public function getProcessorName(): string
+    {
+        return $this->processorName;
+    }
+
+    public function setProcessorName(string $processorName): self
+    {
+        $this->processorName = $processorName;
 
         return $this;
     }

@@ -31,6 +31,11 @@ class Hook
      */
     private $event;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $processorName;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -68,6 +73,18 @@ class Hook
     public function setEvent(?string $event): self
     {
         $this->event = $event;
+
+        return $this;
+    }
+
+    public function getProcessorName(): string
+    {
+        return $this->processorName;
+    }
+
+    public function setProcessorName(string $processorName): self
+    {
+        $this->processorName = $processorName;
 
         return $this;
     }
