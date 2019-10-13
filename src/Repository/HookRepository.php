@@ -19,6 +19,12 @@ class HookRepository extends ServiceEntityRepository
         parent::__construct($registry, Hook::class);
     }
 
+    public function save(Hook $hook): Hook
+    {
+        $this->getEntityManager()->persist($hook);
+        $this->getEntityManager()->flush($hook);
+    }
+
     // /**
     //  * @return Hook[] Returns an array of Hook objects
     //  */

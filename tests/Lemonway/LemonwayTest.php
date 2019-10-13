@@ -8,7 +8,7 @@ use App\Entity\Transaction;
 use App\Lemonway\DTO\ResponseCreditCard;
 use App\Lemonway\Lemonway;
 use App\Lemonway\LemonwayResolver;
-use App\Repository\TransactionRepository;
+use App\Storage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -19,15 +19,14 @@ class LemonwayTest extends TestCase
 
     public function testValidGetResponseCreditCard(): void
     {
-        $repository = $this->createMock(TransactionRepository::class);
-        $repository->method('save')->willReturnCallback(function (Transaction $transaction) {
-            $transaction->setId(1);
-            $transaction->setReference(static::REFERENCE);
+        $storage = $this->createMock(Storage::class);
+        $storage->method('saveTransaction')->willReturn(
+            (new Transaction())
+                ->setId(1)
+                ->setReference(static::REFERENCE)
+        );
 
-            return $transaction;
-        });
-
-        $lemonway = new Lemonway($repository);
+        $gateway = new Lemonway($storage);
 
         $request = new Request([], [
             'p' => array_merge($this->buildRequest(), [
@@ -46,7 +45,7 @@ class LemonwayTest extends TestCase
             ])
         ]);
 
-        $response = $lemonway->prepareCreditCard(
+        $response = $gateway->prepareCreditCard(
             (new LemonwayResolver())->resolveCreditCard($request->request->get('p'))
         );
 
@@ -56,8 +55,8 @@ class LemonwayTest extends TestCase
 
     public function testErrorAuthentication(): void
     {
-        $repository = $this->createMock(TransactionRepository::class);
-        $lemonway = new Lemonway($repository);
+        $storage = $this->createMock(Storage::class);
+        $lemonway = new Lemonway($storage);
 
         static::expectException(InvalidOptionsException::class);
 

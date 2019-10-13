@@ -15,7 +15,7 @@ class CheckoutController extends AbstractController
     {
         $id = $request->query->get('transactionId');
 
-        $transaction = $gateway->find($id);
+        $transaction = $gateway->getStorage()->findTransaction($id);
 
         return $this->render('lemonway/creditcard.html.twig', [
             'token' => $transaction->getId(),

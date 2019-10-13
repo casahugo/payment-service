@@ -16,7 +16,11 @@ final class Lemonway extends AbstractGateway implements GatewayInterface
 {
     public function prepareCreditCard(array $data): ResponseCreditCard
     {
-        $transaction = $this->store($this->getFaker()->md5, PaymentType::CREDITCARD, $data);
+        $transaction = $this->getStorage()->saveTransaction(
+            $this->getFaker()->md5,
+            PaymentType::CREDITCARD,
+            $data
+        );
 
         return new ResponseCreditCard(
             $transaction->getReference(),
@@ -27,7 +31,7 @@ final class Lemonway extends AbstractGateway implements GatewayInterface
 
     public function getRequestCreditCardPayment(string $token, int $error = 0): RequestCreditCardPayment
     {
-        $transaction = $this->find(null, $token);
+        $transaction = $this->getStorage()->findTransaction(null, $token);
 
         $return = $error === 1 ? $transaction->getData()['errorUrl'] : $transaction->getData()['returnUrl'];
 
@@ -36,7 +40,7 @@ final class Lemonway extends AbstractGateway implements GatewayInterface
 
     public function getTransactionDetails(TransactionInterface $transactionDetails): ?ResponseTransactionDetails
     {
-        $transaction = $this->find(
+        $transaction = $this->getStorage()->findTransaction(
             $transactionDetails->getId(),
             $transactionDetails->getReference()
         );
@@ -49,5 +53,25 @@ final class Lemonway extends AbstractGateway implements GatewayInterface
             (float) $data['amountTot'],
             $data['comment']
         );
+    }
+
+    public function getHook(string $id)
+    {
+        // TODO: Implement getHook() method.
+    }
+
+    public function createHook(string $id)
+    {
+        // TODO: Implement createHook() method.
+    }
+
+    public function getUser(string $id)
+    {
+        // TODO: Implement getUser() method.
+    }
+
+    public function createUser($user, $wallet)
+    {
+        // TODO: Implement createUser() method.
     }
 }

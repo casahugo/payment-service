@@ -11,7 +11,7 @@ use App\Mangopay\DTO\ResponseCreditCard;
 use App\Mangopay\DTO\ResponseTransactionDetails;
 use App\Mangopay\Mangopay;
 use App\Mangopay\MangopayResolver;
-use App\Repository\TransactionRepository;
+use App\Storage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,12 +19,10 @@ class MangopayTest extends TestCase
 {
     public function testPrepareCreditCard(): void
     {
-        $repository = $this->createMock(TransactionRepository::class);
-        $repository->method('save')->willReturnCallback(function (Transaction $transaction) {
-            return $transaction->setId(1);
-        });
+        $storage = $this->createMock(Storage::class);
+        $storage->method('saveTransaction')->willReturn((new Transaction())->setId(1));
 
-        $gateway = new Mangopay($repository);
+        $gateway = new Mangopay($storage);
 
         $data = [
             'Tag' => 'custom meta',
@@ -64,12 +62,12 @@ class MangopayTest extends TestCase
             'ReturnURL' => 'http://www.return-site.com/returnURL/',
         ];
 
-        $repository = $this->createMock(TransactionRepository::class);
-        $repository->method('findOneBy')->willReturn(
+        $storage = $this->createMock(Storage::class);
+        $storage->method('findTransaction')->willReturn(
             (new Transaction())->setId(1)->setData($excepted)
         );
 
-        $gateway = new Mangopay($repository);
+        $gateway = new Mangopay($storage);
 
         $response = $gateway->getRequestCreditCardPayment('1', 0);
 
@@ -82,12 +80,12 @@ class MangopayTest extends TestCase
 
     public function testGetTransactionDetails(): void
     {
-        $repository = $this->createMock(TransactionRepository::class);
-        $repository->method('findOneBy')->willReturn(
+        $storage = $this->createMock(Storage::class);
+        $storage->method('findTransaction')->willReturn(
             (new Transaction())->setId(1)->setData([])
         );
 
-        $gateway = new Mangopay($repository);
+        $gateway = new Mangopay($storage);
         $transaction = $gateway->getTransactionDetails(new RequestTransactionDetails(['Id' => '1']));
 
         static::assertInstanceOf(ResponseTransactionDetails::class, $transaction);
