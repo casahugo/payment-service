@@ -21,3 +21,23 @@ lemonway_getmoneyintransdetails:
     path: /api/v1/lemonway/GetMoneyInTransDetails
     methods: [POST]
     controller: App\Controller\Lemonway\GetMoneyInTransDetailsController
+
+mangopay_prepare:
+    path: /api/v1/mangopay/MoneyInWebInit
+    methods: [POST]
+    controller: App\Controller\Mangopay\PrepareController
+
+mangopay_checkout:
+    path: /api/v1/mangopay
+    methods: [GET]
+    controller: App\Controller\Mangopay\CheckoutController
+
+mangopay_capture:
+    path: /api/v1/mangopay
+    methods: [POST]
+    controller: App\Controller\Mangopay\CaptureController
+
+mangopay_transaction:
+    path: /api/v1/mangopay/GetMoneyInTransDetails
+    methods: [GET]
+    controller: App\Controller\Mangopay\TransactionController

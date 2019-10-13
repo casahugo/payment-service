@@ -46,7 +46,7 @@ class LemonwayTest extends TestCase
             ])
         ]);
 
-        $response = $lemonway->getResponseInitCreditCard(
+        $response = $lemonway->prepareCreditCard(
             (new LemonwayResolver())->resolveCreditCard($request->request->get('p'))
         );
 
@@ -84,7 +84,7 @@ class LemonwayTest extends TestCase
             ]
         ]);
 
-        $response = $lemonway->getResponseInitCreditCard(
+        $response = $lemonway->prepareCreditCard(
             (new LemonwayResolver())->resolveCreditCard($request->request->get('p'))
         );
     }

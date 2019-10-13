@@ -14,7 +14,7 @@ use App\Lemonway\DTO\ResponseTransactionDetails;
 
 final class Lemonway extends AbstractGateway implements GatewayInterface
 {
-    public function getResponseInitCreditCard(array $data): ResponseCreditCard
+    public function prepareCreditCard(array $data): ResponseCreditCard
     {
         $transaction = $this->store($this->getFaker()->md5, PaymentType::CREDITCARD, $data);
 

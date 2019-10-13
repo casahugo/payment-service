@@ -6,7 +6,7 @@ namespace App\Gateway;
 
 interface GatewayInterface
 {
-    public function getResponseInitCreditCard(array $data);
+    public function prepareCreditCard(array $data);
 
     public function getRequestCreditCardPayment(string $token, int $error = 0);
 

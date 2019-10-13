@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Lemonway\DTO;
 
-class ResponseTransactionDetails
+use App\ArrayableInterface;
+
+class ResponseTransactionDetails implements ArrayableInterface
 {
     /**
      * @var int
