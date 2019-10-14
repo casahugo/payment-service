@@ -46,10 +46,15 @@ extra_hosts:
 ```
 
 
-### Lemonway 
+### LemonWay 
 ```
 client_login: login
 client_password: password
 direckit_url: http://payment.loc:8010/api/v1/lemonway 
 webkit_url: http://payment.loc:8010/api/v1/lemonway 
+```
+
+### MangoPay 
+```
+api_base_url: http://payment.loc:8010/api/v1/mangopay 
 ```
