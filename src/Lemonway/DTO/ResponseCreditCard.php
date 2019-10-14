@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Lemonway\DTO;
 
-class ResponseCreditCard
+use App\ArrayableInterface;
+
+class ResponseCreditCard implements ArrayableInterface
 {
     /** @var string  */
     private $reference;

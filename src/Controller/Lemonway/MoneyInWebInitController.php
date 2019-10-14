@@ -17,7 +17,7 @@ class MoneyInWebInitController
     public function __invoke(Request $request, Lemonway $lemonway, LemonwayResolver $resolver): Response
     {
         try {
-            $response = $lemonway->getResponseInitCreditCard(
+            $response = $lemonway->prepareCreditCard(
                 $resolver->resolveCreditCard($request->request->get('p'))
             );
         } catch (\Throwable $exception) {

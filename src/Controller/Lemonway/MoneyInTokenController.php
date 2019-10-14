@@ -16,7 +16,7 @@ class MoneyInTokenController extends AbstractController
     {
         $token = $request->query->get('moneyInToken');
 
-        $transaction = $lemonway->find(null, $token);
+        $transaction = $lemonway->getStorage()->findTransaction(null, $token);
 
         return $this->render('lemonway/creditcard.html.twig', [
             'token' => $transaction->getReference(),
