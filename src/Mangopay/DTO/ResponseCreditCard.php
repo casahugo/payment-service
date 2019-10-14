@@ -11,13 +11,17 @@ class ResponseCreditCard implements ArrayableInterface
     /** @var int  */
     private $id;
 
+    /** @var string  */
+    private $redirectUrl;
+
     /** @var array  */
     private $data;
 
-    public function __construct(int $id, array $data = null)
+    public function __construct(int $id, string $redirectUrl, array $data = null)
     {
         $this->id = $id;
         $this->data = $data;
+        $this->redirectUrl = $redirectUrl;
     }
 
     public function toArray(): array
@@ -41,9 +45,9 @@ class ResponseCreditCard implements ArrayableInterface
             'DebitedWalletId' => $this->data['DebitedWalletId'] ?? null,
             'PaymentType' => 'CARD',
             'ExecutionType' => 'WEB',
-            'RedirectURL' => 'http://payment.loc:8010/api/v1/mangopay/checkout?transactionId=' . $this->id,
-            'ReturnURL' => 'http://wizaplace.loc/?transactionId=' . $this->id,
-            'TemplateURL' => 'http://wizaplace.loc/?transactionId=' . $this->id,
+            'RedirectURL' => $this->redirectUrl,
+            'ReturnURL' => $this->data['ReturnURL'] . '&transactionId=' . $this->id,
+            'TemplateURL' => $this->data['ReturnURL'] . '&transactionId=' . $this->id,
             'CardType' => $this->data['CardType'] ?? null,
             'Culture' => $this->data['Culture'] ?? null,
             'SecureMode' => $this->data['SecureMode'] ?? null,

@@ -18,6 +18,7 @@ use App\Mangopay\DTO\ResponseUser;
 use App\Mangopay\DTO\ResponseWallet;
 use App\Mangopay\DTO\ResponseWallets;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\RouterInterface;
 
 class Mangopay extends AbstractGateway implements GatewayInterface
 {
@@ -25,7 +26,13 @@ class Mangopay extends AbstractGateway implements GatewayInterface
     {
         $transaction = $this->getStorage()->saveTransaction($this->getFaker()->md5, PaymentType::CREDITCARD, $data);
 
-        return new ResponseCreditCard($transaction->getId(), $data);
+        return new ResponseCreditCard(
+            $transaction->getId(),
+            $this->getRouter()->generate('mangopay_checkout', [
+                'transactionId' => $transaction->getId()
+            ], RouterInterface::ABSOLUTE_URL),
+            $data
+        );
     }
 
     public function getRequestCreditCardPayment(string $token, int $error = 0)
@@ -33,8 +40,8 @@ class Mangopay extends AbstractGateway implements GatewayInterface
         $transaction = $this->getStorage()->findTransaction((int) $token);
 
         return new RequestCreditCardPayment(
-            $transaction->getData()['RedirectUrl'] ?? 'http://wizaplace.loc/payment-notification/mangopay-card',
-            $transaction->getData()['ReturnURL'] ?? 'http://payment.loc:8010/api/v1/mangopay/checkout',
+            $transaction->getData()['ReturnURL'],
+            $transaction->getData()['ReturnURL'],
             $transaction->getId()
         );
     }

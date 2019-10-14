@@ -7,13 +7,13 @@ namespace App\Controller\Mangopay;
 use App\Mangopay\DTO\RequestCreditCardPayment;
 use App\Mangopay\Mangopay;
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class CaptureController
 {
-    public function __invoke(Request $request, Mangopay $gateway): RedirectResponse
+    public function __invoke(Request $request, Mangopay $gateway): Response
     {
         $token  = $request->request->get('token', 'invalid');
         $error  = $request->request->getInt('error');
@@ -27,11 +27,12 @@ class CaptureController
         return new RedirectResponse((string) $request->getRedirectUrl());
     }
 
-    private function notify(RequestCreditCardPayment $requestCreditCardPayment): ResponseInterface
+    private function notify(RequestCreditCardPayment $requestCreditCardPayment)
     {
-        return (new Client())->get(
-            $requestCreditCardPayment->getEndpoint(),
-            $requestCreditCardPayment->toArray()
-        );
+        try {
+            return (new Client())->post($requestCreditCardPayment->getCallback());
+        } catch (\Exception $exception) {
+            // ...
+        }
     }
 }

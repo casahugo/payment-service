@@ -12,6 +12,7 @@ use App\Storage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\Routing\RouterInterface;
 
 class LemonwayTest extends TestCase
 {
@@ -26,7 +27,7 @@ class LemonwayTest extends TestCase
                 ->setReference(static::REFERENCE)
         );
 
-        $gateway = new Lemonway($storage);
+        $gateway = new Lemonway($storage, $this->createMock(RouterInterface::class));
 
         $request = new Request([], [
             'p' => array_merge($this->buildRequest(), [
@@ -56,7 +57,7 @@ class LemonwayTest extends TestCase
     public function testErrorAuthentication(): void
     {
         $storage = $this->createMock(Storage::class);
-        $lemonway = new Lemonway($storage);
+        $lemonway = new Lemonway($storage, $this->createMock(RouterInterface::class));
 
         static::expectException(InvalidOptionsException::class);
 

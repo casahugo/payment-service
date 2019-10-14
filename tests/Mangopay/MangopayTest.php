@@ -14,6 +14,7 @@ use App\Mangopay\MangopayResolver;
 use App\Storage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 
 class MangopayTest extends TestCase
 {
@@ -22,7 +23,10 @@ class MangopayTest extends TestCase
         $storage = $this->createMock(Storage::class);
         $storage->method('saveTransaction')->willReturn((new Transaction())->setId(1));
 
-        $gateway = new Mangopay($storage);
+        $router = $this->createMock(RouterInterface::class);
+        $router->method('generate')->willReturn('http://www.my-site.com/returnURL/');
+
+        $gateway = new Mangopay($storage, $router);
 
         $data = [
             'Tag' => 'custom meta',
@@ -52,13 +56,13 @@ class MangopayTest extends TestCase
         );
 
         static::assertInstanceOf(ResponseCreditCard::class, $response);
-        static::assertEquals(new ResponseCreditCard(1, $data), $response);
+        static::assertEquals(new ResponseCreditCard(1, 'http://www.my-site.com/returnURL/', $data), $response);
     }
 
     public function testGetRequestCreditCardPayment(): void
     {
         $excepted = [
-            'RedirectUrl' => 'http://www.redirect-site.com/returnURL/',
+            'RedirectUrl' => 'http://www.return-site.com/returnURL/',
             'ReturnURL' => 'http://www.return-site.com/returnURL/',
         ];
 
@@ -67,7 +71,7 @@ class MangopayTest extends TestCase
             (new Transaction())->setId(1)->setData($excepted)
         );
 
-        $gateway = new Mangopay($storage);
+        $gateway = new Mangopay($storage, $this->createMock(RouterInterface::class));
 
         $response = $gateway->getRequestCreditCardPayment('1', 0);
 
@@ -85,7 +89,7 @@ class MangopayTest extends TestCase
             (new Transaction())->setId(1)->setData([])
         );
 
-        $gateway = new Mangopay($storage);
+        $gateway = new Mangopay($storage, $this->createMock(RouterInterface::class));
         $transaction = $gateway->getTransactionDetails(new RequestTransactionDetails(1));
 
         static::assertInstanceOf(ResponseTransactionDetails::class, $transaction);

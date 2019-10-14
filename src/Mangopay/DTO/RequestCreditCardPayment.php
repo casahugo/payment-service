@@ -27,14 +27,14 @@ class RequestCreditCardPayment implements ArrayableInterface
         $this->id = $id;
     }
 
-    public function getEndpoint(): UriInterface
+    public function getCallback(): UriInterface
     {
-        return new Uri(urldecode($this->callbackUrl . '?transactionId=' . $this->id));
+        return new Uri(urldecode($this->callbackUrl . '&transactionId=' . $this->id));
     }
 
     public function getRedirectUrl(): UriInterface
     {
-        return new Uri(urldecode($this->redirectUrl . '?transactionId=' . $this->id));
+        return new Uri(urldecode($this->redirectUrl . '&transactionId=' . $this->id));
     }
 
     public function toArray(): array
