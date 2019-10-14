@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\Gateway\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -71,7 +72,7 @@ class User
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -83,7 +84,7 @@ class User
         return $this;
     }
 
-    public function getFirstname(): ?string
+    public function getFirstname(): string
     {
         return $this->firstname;
     }
@@ -95,7 +96,7 @@ class User
         return $this;
     }
 
-    public function getLastname(): ?string
+    public function getLastname(): string
     {
         return $this->lastname;
     }
@@ -175,6 +176,18 @@ class User
     public function setProcessorName(string $processorName): self
     {
         $this->processorName = $processorName;
+
+        return $this;
+    }
+
+    public function getMobile(): string
+    {
+        return $this->mobile;
+    }
+
+    public function setMobile(string $mobile): self
+    {
+        $this->mobile = $mobile;
 
         return $this;
     }

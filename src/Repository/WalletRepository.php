@@ -19,6 +19,14 @@ class WalletRepository extends ServiceEntityRepository
         parent::__construct($registry, Wallet::class);
     }
 
+    public function save(Wallet $wallet): Wallet
+    {
+        $this->getEntityManager()->persist($wallet);
+        $this->getEntityManager()->flush($wallet);
+
+        return $wallet;
+    }
+
     // /**
     //  * @return Wallet[] Returns an array of Wallet objects
     //  */

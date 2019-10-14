@@ -23,12 +23,12 @@ lemonway_getmoneyintransdetails:
     controller: App\Controller\Lemonway\GetMoneyInTransDetailsController
 
 mangopay_prepare:
-    path: /api/v1/mangopay/MoneyInWebInit
+    path: /api/v1/mangopay/v2.01/wizaplace/payins/card/web/
     methods: [POST]
     controller: App\Controller\Mangopay\PrepareController
 
 mangopay_checkout:
-    path: /api/v1/mangopay
+    path: /api/v1/mangopay/checkout
     methods: [GET]
     controller: App\Controller\Mangopay\CheckoutController
 
@@ -38,6 +38,31 @@ mangopay_capture:
     controller: App\Controller\Mangopay\CaptureController
 
 mangopay_transaction:
-    path: /api/v1/mangopay/GetMoneyInTransDetails
+    path: /api/v1/mangopay/v2.01/wizaplace/payins/{id}
     methods: [GET]
     controller: App\Controller\Mangopay\TransactionController
+
+mangopay_create_user:
+    path: /api/v1/mangopay/v2.01/wizaplace/users/natural
+    methods: [POST]
+    controller: App\Controller\Mangopay\CreateWalletController
+
+mangopay_wallets:
+    path: /api/v1/mangopay/v2.01/wizaplace/users/{userId}/wallets
+    methods: [GET]
+    controller: App\Controller\Mangopay\WalletsController
+
+mangopay_create_wallet:
+    path: /api/v1/mangopay/v2.01/wizaplace/wallets
+    methods: [POST]
+    controller: App\Controller\Mangopay\CreateWalletController
+
+mangopay_user:
+    path: /api/v1/mangopay/v2.01/wizaplace/users/{id}
+    methods: [GET]
+    controller: App\Controller\Mangopay\WalletController
+
+mangopay_oauth:
+    path: /api/v1/mangopay/v2.01/oauth/token
+    methods: [POST]
+    controller: App\Controller\AuthController

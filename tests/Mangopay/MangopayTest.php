@@ -86,7 +86,7 @@ class MangopayTest extends TestCase
         );
 
         $gateway = new Mangopay($storage);
-        $transaction = $gateway->getTransactionDetails(new RequestTransactionDetails(['Id' => '1']));
+        $transaction = $gateway->getTransactionDetails(new RequestTransactionDetails(1));
 
         static::assertInstanceOf(ResponseTransactionDetails::class, $transaction);
     }

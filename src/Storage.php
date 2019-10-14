@@ -8,6 +8,7 @@ use App\Entity\Hook;
 use App\Entity\Transaction;
 use App\Entity\User;
 use App\Entity\Wallet;
+use App\Gateway\UserInterface;
 use App\Repository\HookRepository;
 use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
@@ -81,6 +82,15 @@ class Storage
         return $hook;
     }
 
+    /**
+     * @param string $processorName
+     * @return Hook[]
+     */
+    public function findHooks(string $processorName): array
+    {
+        return $this->hookRepository->findBy(['processorName' => $processorName]);
+    }
+
     public function findUser(int $id): User
     {
         $user = $this->userRepository->find($id);
@@ -92,16 +102,40 @@ class Storage
         return $user;
     }
 
-    public function saveUser(
-        string $email,
-        string $firstname,
-        string $lastname
-    ): User {
+    public function findUserByEmail(string $email): User
+    {
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+
+        if (false === $user instanceof User) {
+            throw new NotFoundHttpException('User not found.');
+        }
+
+        return $user;
+    }
+
+    public function saveUser(UserInterface $user): User
+    {
         return $this->userRepository->save(
             (new User())
-                ->setEmail($email)
-            ->setFirstname($firstname)
-            ->setLastname($lastname)
+                ->setEmail($user->getEmail())
+                ->setFirstname($user->getFirstname())
+                ->setLastname($user->getFirstname())
+                ->setCity('Paris')
+                ->setZipcode('75001')
+                ->setCountry('FR')
+                ->setBirthday('1463496101')
+                ->setMobile('+33771123552')
+                ->setProcessorName(static::class)
+        );
+    }
+
+    public function saveWallet(int $userId, string $currency, string $description = null): Wallet
+    {
+        return $this->walletRepository->save(
+            (new Wallet())
+                ->setUserId($userId)
+                ->setCurrency($currency)
+                ->setDescription($description)
         );
     }
 
@@ -121,6 +155,17 @@ class Storage
                 ->setUrl($url)
                 ->setStatus($status)
                 ->setEvent($event)
+                ->setProcessorName(static::class)
+        );
+    }
+
+    public function updateHook(int $id, string $url, string $status): Hook
+    {
+        $hook = $this->hookRepository->find($id);
+
+        return $this->hookRepository->save(
+            $hook->setUrl($url)
+                ->setStatus($status)
         );
     }
 }

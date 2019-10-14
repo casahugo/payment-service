@@ -13,7 +13,7 @@ class CheckoutController extends AbstractController
 {
     public function __invoke(Request $request, Mangopay $gateway): Response
     {
-        $id = $request->query->get('transactionId');
+        $id = $request->query->getInt('transactionId');
 
         $transaction = $gateway->getStorage()->findTransaction($id);
 

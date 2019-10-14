@@ -12,11 +12,7 @@ interface GatewayInterface
 
     public function getTransactionDetails(TransactionInterface $transactionDetails);
 
-    public function getHook(string $id);
+    public function getUser(int $id);
 
-    public function createHook(string $id);
-
-    public function getUser(string $id);
-
-    public function createUser($user, $wallet);
+    public function createUser(UserInterface $user);
 }

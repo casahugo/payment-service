@@ -11,9 +11,9 @@ class RequestTransactionDetails implements TransactionInterface
     /** @var mixed|null  */
     private $id;
 
-    public function __construct(array $data)
+    public function __construct(int $id)
     {
-        $this->id = array_key_exists('Id', $data) && $data['Id'] > 0 ? (int) $data['Id'] : null;
+        $this->id = $id;
     }
 
     public function getId(): ?int

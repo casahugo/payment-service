@@ -29,7 +29,7 @@ class CaptureController
 
     private function notify(RequestCreditCardPayment $requestCreditCardPayment): ResponseInterface
     {
-        return (new Client())->post(
+        return (new Client())->get(
             $requestCreditCardPayment->getEndpoint(),
             $requestCreditCardPayment->toArray()
         );

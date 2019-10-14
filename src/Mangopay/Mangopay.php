@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace App\Mangopay;
 
+use App\Entity\Wallet;
 use App\Enum\PaymentType;
 use App\Gateway\AbstractGateway;
 use App\Gateway\GatewayInterface;
 use App\Gateway\TransactionInterface;
+use App\Gateway\UserInterface;
 use App\Mangopay\DTO\RequestCreditCardPayment;
+use App\Mangopay\DTO\ResponseCreateUser;
 use App\Mangopay\DTO\ResponseCreditCard;
 use App\Mangopay\DTO\ResponseTransactionDetails;
+use App\Mangopay\DTO\ResponseUser;
+use App\Mangopay\DTO\ResponseWallet;
+use App\Mangopay\DTO\ResponseWallets;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Mangopay extends AbstractGateway implements GatewayInterface
 {
@@ -26,8 +33,8 @@ class Mangopay extends AbstractGateway implements GatewayInterface
         $transaction = $this->getStorage()->findTransaction((int) $token);
 
         return new RequestCreditCardPayment(
-            $transaction->getData()['RedirectUrl'],
-            $transaction->getData()['ReturnURL'],
+            $transaction->getData()['RedirectUrl'] ?? 'http://wizaplace.loc/payment-notification/mangopay-card',
+            $transaction->getData()['ReturnURL'] ?? 'http://payment.loc:8010/api/v1/mangopay/checkout',
             $transaction->getId()
         );
     }
@@ -39,23 +46,35 @@ class Mangopay extends AbstractGateway implements GatewayInterface
         return new ResponseTransactionDetails($transaction->getId(), $transaction->getData());
     }
 
-    public function getHook(string $id)
+    public function getUser(int $id)
     {
-        // TODO: Implement getHook() method.
+        $user = $this->getStorage()->findUser($id);
+
+        return new ResponseUser($user->getId(), $user);
     }
 
-    public function createHook(string $id)
+    public function getUserWallet(int $userId)
     {
-        // TODO: Implement createHook() method.
+        $wallets = $this->getStorage()->findUserWallet($userId);
+
+        return new ResponseWallets(array_map(function (Wallet $wallet): ResponseWallet {
+            return new ResponseWallet($wallet);
+        }, $wallets));
     }
 
-    public function getUser(string $id)
+    public function createUserWallet(int $userId, string $currency, string $description = null)
     {
-        // TODO: Implement getUser() method.
+        return new ResponseWallet($this->getStorage()->saveWallet($userId, $currency, $description));
     }
 
-    public function createUser($user, $wallet)
+    public function createUser(UserInterface $createUser)
     {
-        // TODO: Implement createUser() method.
+        try {
+            $user = $this->getStorage()->findUserByEmail($createUser->getEmail());
+        } catch (NotFoundHttpException $exception) {
+            $user = $this->getStorage()->saveUser($createUser);
+        }
+
+        return new ResponseCreateUser($user->getId(), $user);
     }
 }

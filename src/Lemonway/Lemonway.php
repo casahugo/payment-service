@@ -8,6 +8,7 @@ use App\Enum\PaymentType;
 use App\Gateway\AbstractGateway;
 use App\Gateway\GatewayInterface;
 use App\Gateway\TransactionInterface;
+use App\Gateway\UserInterface;
 use App\Lemonway\DTO\ResponseCreditCard;
 use App\Lemonway\DTO\RequestCreditCardPayment;
 use App\Lemonway\DTO\ResponseTransactionDetails;
@@ -60,17 +61,22 @@ final class Lemonway extends AbstractGateway implements GatewayInterface
         // TODO: Implement getHook() method.
     }
 
-    public function createHook(string $id)
+    public function getHooks()
+    {
+        $hooks = $this->getStorage()->findHooks(static::class);
+    }
+
+    public function createHook(string $url, string $event)
     {
         // TODO: Implement createHook() method.
     }
 
-    public function getUser(string $id)
+    public function getUser(int $id)
     {
         // TODO: Implement getUser() method.
     }
 
-    public function createUser($user, $wallet)
+    public function createUser(UserInterface $user)
     {
         // TODO: Implement createUser() method.
     }

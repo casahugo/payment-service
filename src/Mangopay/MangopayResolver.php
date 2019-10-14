@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mangopay;
 
+use App\Mangopay\DTO\RequestCreateUser;
 use App\Mangopay\DTO\RequestTransactionDetails;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,14 +13,14 @@ class MangopayResolver extends OptionsResolver
     public function resolveCreditCard(array $data): array
     {
         return $this
-            ->setRequired(['AuthorId', 'DebitedFunds', 'Fees', 'ReturnURL', 'CardType', 'CreditedUserId', 'Culture'])
+            ->setRequired(['AuthorId', 'DebitedFunds', 'Fees', 'ReturnURL', 'CardType', 'CreditedWalletId', 'Culture'])
             ->setDefined([
                 'Tag',
                 'SecureMode',
                 'TemplateURLOptions',
                 'StatementDescriptor',
                 'language',
-                'CreditedWalletId',
+                'CreditedUserId',
             ])
             ->setDefaults([
                 'SecureMode' => 'DEFAULT',
@@ -28,8 +29,25 @@ class MangopayResolver extends OptionsResolver
             ;
     }
 
-    public function resolveTransactionDetails(array $data): RequestTransactionDetails
+    public function resolveTransactionDetails(int $id): RequestTransactionDetails
     {
-        return new RequestTransactionDetails($data);
+        return new RequestTransactionDetails($id);
+    }
+
+    public function resolveUser(array $data): RequestCreateUser
+    {
+        return new RequestCreateUser(
+            $this
+                ->setRequired(['FirstName', 'LastName', 'Birthday', 'Nationality', 'CountryOfResidence', 'Email'])
+                ->setDefined([
+                    'Address',
+                    'Occupation',
+                    'IncomeRange',
+                ])
+                ->setDefaults([
+                    'SecureMode' => 'DEFAULT',
+                ])
+                ->resolve($data)
+        );
     }
 }
