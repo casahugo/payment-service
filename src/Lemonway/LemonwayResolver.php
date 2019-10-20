@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Lemonway;
 
-use App\Lemonway\DTO\RequestTransactionDetails;
+use App\Entity\Transaction;
+use App\Gateway\GatewayResolverInterface;
+use App\Gateway\TransactionInterface;
+use App\Mangopay\Response\RequestCreateUser;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LemonwayResolver extends OptionsResolver
+class LemonwayResolver extends OptionsResolver implements GatewayResolverInterface
 {
     public const LOGIN = 'login';
 
@@ -22,7 +25,7 @@ class LemonwayResolver extends OptionsResolver
         ;
     }
 
-    public function resolveCreditCard(array $data): array
+    public function resolvePrepare(array $data): array
     {
         return $this
             ->setDefined(['amountCom', 'comment', 'delayedDays', 'email', 'language'])
@@ -34,23 +37,24 @@ class LemonwayResolver extends OptionsResolver
                 'registerCard' => 0,
                 'moneyInNature' => 0,
             ])
-            ->resolve($data)
+            ->resolve($data['p'])
         ;
     }
 
-    public function resolveTransactionDetails(array $data): RequestTransactionDetails
+    public function resolveTransaction(array $data): TransactionInterface
     {
-        return new RequestTransactionDetails(
-            $this
-                ->setDefined([
-                    'transactionId',
-                    'transactionComment',
-                    'transactionMerchantToken',
-                    'startDate',
-                    'endDate'
-                ])
-                ->resolve($data)
-        );
+         $data = $this
+            ->setDefined([
+                'transactionId',
+                'transactionComment',
+                'transactionMerchantToken',
+                'startDate',
+                'endDate'
+            ])
+            ->resolve($data['p'])
+         ;
+
+        return (new Transaction())->setReference($data['transactionMerchantToken']);
     }
 
     private function getDefaultParams(): array
@@ -62,5 +66,10 @@ class LemonwayResolver extends OptionsResolver
             'walletIp',
             'walletUa',
         ];
+    }
+
+    public function resolveUser(array $data): RequestCreateUser
+    {
+        // TODO: Implement resolveUser() method.
     }
 }

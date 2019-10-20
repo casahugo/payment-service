@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace App\Mangopay;
 
-use App\Mangopay\DTO\RequestCreateUser;
-use App\Mangopay\DTO\RequestTransactionDetails;
+use App\Entity\Transaction;
+use App\Gateway\GatewayResolverInterface;
+use App\Gateway\TransactionInterface;
+use App\Mangopay\Response\RequestCreateUser;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MangopayResolver extends OptionsResolver
+class MangopayResolver extends OptionsResolver implements GatewayResolverInterface
 {
-    public function resolveCreditCard(array $data): array
+    public function resolvePrepare(array $data): array
     {
         return $this
             ->setRequired(['AuthorId', 'DebitedFunds', 'Fees', 'ReturnURL', 'CardType', 'CreditedWalletId', 'Culture'])
@@ -26,12 +28,12 @@ class MangopayResolver extends OptionsResolver
                 'SecureMode' => 'DEFAULT',
             ])
             ->resolve($data)
-            ;
+        ;
     }
 
-    public function resolveTransactionDetails(int $id): RequestTransactionDetails
+    public function resolveTransaction(array $data): TransactionInterface
     {
-        return new RequestTransactionDetails($id);
+        return (new Transaction())->setId((int) $data['id']);
     }
 
     public function resolveUser(array $data): RequestCreateUser
