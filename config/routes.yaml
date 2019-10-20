@@ -5,64 +5,88 @@
 lemonway_moneyinwebinit:
     path: /api/v1/lemonway/MoneyInWebInit
     methods: [POST]
-    controller: App\Controller\Lemonway\MoneyInWebInitController
+    controller: App\Controller\Payment\PrepareController
+    defaults:
+        gatewayName: App\Lemonway\Lemonway
 
 lemonway_moneyintoken:
     path: /api/v1/lemonway
     methods: [GET]
-    controller: App\Controller\Lemonway\MoneyInTokenController
+    controller: App\Controller\Payment\CheckoutController
+    defaults:
+        gatewayName: App\Lemonway\Lemonway
 
 lemonway_postmoneyintoken:
     path: /api/v1/lemonway
     methods: [POST]
-    controller: App\Controller\Lemonway\PostMoneyInTokenController
+    controller: App\Controller\Payment\CaptureController
+    defaults:
+        gatewayName: App\Lemonway\Lemonway
 
 lemonway_getmoneyintransdetails:
     path: /api/v1/lemonway/GetMoneyInTransDetails
     methods: [POST]
-    controller: App\Controller\Lemonway\GetMoneyInTransDetailsController
+    controller: App\Controller\Payment\TransactionController
+    defaults:
+        gatewayName: App\Lemonway\Lemonway
 
 mangopay_prepare:
     path: /api/v1/mangopay/v2.01/wizaplace/payins/card/web/
     methods: [POST]
-    controller: App\Controller\Mangopay\PrepareController
+    controller: App\Controller\Payment\PrepareController
+    defaults:
+        gatewayName: App\Mangopay\Mangopay
 
 mangopay_checkout:
     path: /api/v1/mangopay/checkout
     methods: [GET]
-    controller: App\Controller\Mangopay\CheckoutController
+    controller: App\Controller\Payment\CheckoutController
+    defaults:
+        gatewayName: App\Mangopay\Mangopay
 
 mangopay_capture:
     path: /api/v1/mangopay
     methods: [POST]
-    controller: App\Controller\Mangopay\CaptureController
+    controller: App\Controller\Payment\CaptureController
+    defaults:
+        gatewayName: App\Mangopay\Mangopay
 
 mangopay_transaction:
     path: /api/v1/mangopay/v2.01/wizaplace/payins/{id}
     methods: [GET]
-    controller: App\Controller\Mangopay\TransactionController
+    controller: App\Controller\Payment\TransactionController
+    defaults:
+        gatewayName: App\Mangopay\Mangopay
 
 mangopay_create_user:
     path: /api/v1/mangopay/v2.01/wizaplace/users/natural
     methods: [POST]
-    controller: App\Controller\Mangopay\CreateWalletController
+    controller: App\Controller\Wallet\CreateWalletController
 
 mangopay_wallets:
     path: /api/v1/mangopay/v2.01/wizaplace/users/{userId}/wallets
     methods: [GET]
-    controller: App\Controller\Mangopay\WalletsController
+    controller: App\Controller\Wallet\WalletsController
+    defaults:
+        gatewayName: App\Mangopay\Mangopay
 
 mangopay_create_wallet:
     path: /api/v1/mangopay/v2.01/wizaplace/wallets
     methods: [POST]
-    controller: App\Controller\Mangopay\CreateWalletController
+    controller: App\Controller\Wallet\CreateWalletController
+    defaults:
+        gatewayName: App\Mangopay\Mangopay
 
 mangopay_user:
     path: /api/v1/mangopay/v2.01/wizaplace/users/{id}
     methods: [GET]
-    controller: App\Controller\Mangopay\WalletController
+    controller: App\Controller\Wallet\WalletController
+    defaults:
+        gatewayName: App\Mangopay\Mangopay
 
 mangopay_oauth:
     path: /api/v1/mangopay/v2.01/oauth/token
     methods: [POST]
     controller: App\Controller\AuthController
+    defaults:
+        gatewayName: App\Mangopay\Mangopay

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Gateway;
 
-use App\Storage;
-use Faker\Factory;
-use Faker\Generator;
+use App\Gateway\Action\ActionInterface;
+use App\Storage\Storage;
+use App\Storage\StorageAwareInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-abstract class AbstractGateway
+abstract class AbstractGateway implements GatewayInterface
 {
     /** @var Storage  */
     private $storage;
@@ -17,24 +17,40 @@ abstract class AbstractGateway
     /** @var RouterInterface  */
     private $router;
 
-    public function __construct(Storage $storage, RouterInterface $router)
+    /** @var array  */
+    private $actions = [];
+
+    public function __construct(iterable $actions, Storage $storage, RouterInterface $router)
     {
+        $this->setActions($actions);
         $this->storage = $storage;
         $this->router = $router;
     }
 
-    public function getStorage(): Storage
+    public function execute($request)
     {
-        return $this->storage;
+        /** @var ActionInterface $action */
+        foreach ($this->actions as $action) {
+            if ($action->supports($request, static::class)) {
+                if ($action instanceof StorageAwareInterface) {
+                    $action->setStorage($this->storage);
+                }
+
+                if ($action instanceof RouterAwareInterface) {
+                    $action->setRouter($this->router);
+                }
+
+                return $action->execute($request);
+            }
+        }
+
+        throw new \LogicException('Unable to find supported action.');
     }
 
-    public function getRouter(): RouterInterface
+    public function setActions(iterable $actions): void
     {
-        return $this->router;
-    }
-
-    public function getFaker(): Generator
-    {
-        return Factory::create();
+        foreach ($actions as $action) {
+            $this->actions[] = $action;
+        }
     }
 }

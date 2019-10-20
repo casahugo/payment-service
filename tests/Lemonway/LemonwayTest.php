@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Lemonway;
 
 use App\Entity\Transaction;
-use App\Lemonway\DTO\ResponseCreditCard;
+use App\Gateway\Request\Prepare;
+use App\Lemonway\Action\PrepareAction;
 use App\Lemonway\Lemonway;
-use App\Lemonway\LemonwayResolver;
-use App\Storage;
+use App\Lemonway\Response\ResponsePrepare;
+use App\Storage\Storage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -27,7 +28,11 @@ class LemonwayTest extends TestCase
                 ->setReference(static::REFERENCE)
         );
 
-        $gateway = new Lemonway($storage, $this->createMock(RouterInterface::class));
+        $gateway = new Lemonway(
+            [new PrepareAction()],
+            $storage,
+            $this->createMock(RouterInterface::class)
+        );
 
         $request = new Request([], [
             'p' => array_merge($this->buildRequest(), [
@@ -46,18 +51,18 @@ class LemonwayTest extends TestCase
             ])
         ]);
 
-        $response = $gateway->prepareCreditCard(
-            (new LemonwayResolver())->resolveCreditCard($request->request->get('p'))
-        );
+        $response = $gateway->execute(new Prepare(
+            $gateway->resolver()->resolvePrepare($request->request->all())
+        ));
 
-        static::assertInstanceOf(ResponseCreditCard::class, $response);
-        static::assertEquals(new ResponseCreditCard(static::REFERENCE, 1), $response);
+        static::assertInstanceOf(ResponsePrepare::class, $response);
+        static::assertEquals(new ResponsePrepare(static::REFERENCE, 1), $response);
     }
 
     public function testErrorAuthentication(): void
     {
         $storage = $this->createMock(Storage::class);
-        $lemonway = new Lemonway($storage, $this->createMock(RouterInterface::class));
+        $gateway = new Lemonway([new PrepareAction()], $storage, $this->createMock(RouterInterface::class));
 
         static::expectException(InvalidOptionsException::class);
 
@@ -84,9 +89,9 @@ class LemonwayTest extends TestCase
             ]
         ]);
 
-        $response = $lemonway->prepareCreditCard(
-            (new LemonwayResolver())->resolveCreditCard($request->request->get('p'))
-        );
+        $response = $gateway->execute(new Prepare(
+            $gateway->resolver()->resolvePrepare($request->request->all())
+        ));
     }
 
     /** @return string[] */
