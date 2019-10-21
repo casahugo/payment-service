@@ -6,7 +6,11 @@ namespace App\Tests\Mangopay;
 
 use App\Entity\Transaction;
 use App\Gateway\Request\Capture;
+use App\Gateway\Request\Checkout;
 use App\Gateway\Request\Prepare;
+use App\Gateway\Request\Transaction as RequestTransaction;
+use App\Gateway\Response\ResponseCheckout;
+use App\Mangopay\Action\CheckoutAction;
 use App\Mangopay\Action\CaptureAction;
 use App\Mangopay\Action\PrepareAction;
 use App\Mangopay\Action\TransactionAction;
@@ -15,13 +19,17 @@ use App\Mangopay\Response\ResponseCapture;
 use App\Mangopay\Response\ResponsePrepare;
 use App\Mangopay\Response\ResponseTransaction;
 use App\Storage\Storage;
+use GuzzleHttp\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
 class MangopayTest extends TestCase
 {
-    public function testPrepareCreditCard(): void
+    private const REFERENCE = '72306889c68dfe6d8e3e65f02b4e33ae';
+    private const TRANSACTION_ID = 1;
+
+    public function testPrepareAction(): void
     {
         $storage = $this->createMock(Storage::class);
         $storage->method('saveTransaction')->willReturn((new Transaction())->setId(1));
@@ -62,7 +70,7 @@ class MangopayTest extends TestCase
         static::assertEquals(new ResponsePrepare(1, 'http://www.my-site.com/returnURL/', $data), $response);
     }
 
-    public function testGetRequestCreditCardPayment(): void
+    public function testCaptureAction(): void
     {
         $excepted = [
             'RedirectUrl' => 'http://www.return-site.com/returnURL/',
@@ -85,7 +93,32 @@ class MangopayTest extends TestCase
         );
     }
 
-    public function testGetTransactionDetails(): void
+    public function testCheckoutAction(): void
+    {
+        $storage = $this->createMock(Storage::class);
+        $storage->method('findTransaction')->willReturn(
+            (new Transaction())
+                ->setId(static::TRANSACTION_ID)
+                ->setReference(static::REFERENCE)
+        );
+
+        $gateway = new Mangopay(
+            [new CheckoutAction()],
+            $storage,
+            $this->createMock(RouterInterface::class)
+        );
+
+        /** @var ResponseCheckout $response */
+        $response = $gateway->execute(new Checkout(['transactionId' => static::TRANSACTION_ID]));
+        $exceptedResponse = new ResponseCheckout(static::REFERENCE, new Uri(null));
+
+        static::assertInstanceOf(ResponseCheckout::class, $response);
+        static::assertEquals($exceptedResponse, $response);
+        static::assertSame($exceptedResponse->getReference(), static::REFERENCE);
+        static::assertSame((string) $exceptedResponse->getAction(), '');
+    }
+
+    public function testTransactionAction(): void
     {
         $storage = $this->createMock(Storage::class);
         $storage->method('findTransaction')->willReturn(
@@ -93,7 +126,7 @@ class MangopayTest extends TestCase
         );
 
         $gateway = new Mangopay([new TransactionAction()], $storage, $this->createMock(RouterInterface::class));
-        $transaction = $gateway->execute(new \App\Gateway\Request\Transaction(
+        $transaction = $gateway->execute(new RequestTransaction(
             $gateway->resolver()->resolveTransaction(['id' => 1])
         ));
 

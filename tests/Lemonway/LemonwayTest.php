@@ -28,7 +28,6 @@ use Symfony\Component\Routing\RouterInterface;
 class LemonwayTest extends TestCase
 {
     private const REFERENCE = '72306889c68dfe6d8e3e65f02b4e33ae';
-
     private const TRANSACTION_ID = 1;
 
     public function testPrepareAction(): void
