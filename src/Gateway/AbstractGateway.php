@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Gateway;
 
 use App\Gateway\Action\ActionInterface;
-use App\Storage\Storage;
+use App\Storage\StorageInterface;
 use App\Storage\StorageAwareInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 abstract class AbstractGateway implements GatewayInterface
 {
-    /** @var Storage  */
+    /** @var StorageInterface  */
     private $storage;
 
     /** @var RouterInterface  */
@@ -20,7 +20,7 @@ abstract class AbstractGateway implements GatewayInterface
     /** @var array  */
     private $actions = [];
 
-    public function __construct(iterable $actions, Storage $storage, RouterInterface $router)
+    public function __construct(iterable $actions, StorageInterface $storage, RouterInterface $router)
     {
         $this->setActions($actions);
         $this->storage = $storage;
