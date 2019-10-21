@@ -33,7 +33,7 @@ class ResponseCapture implements ResponseCaptureInterface
 
     public function getRedirect(): UriInterface
     {
-        return new Uri(urldecode($this->endpoint . http_build_query($this->toArray())));
+        return new Uri(urldecode($this->endpoint . '?' . http_build_query($this->toArray())));
     }
 
     public function toArray(): array
