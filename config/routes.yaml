@@ -62,6 +62,8 @@ mangopay_create_user:
     path: /api/v1/mangopay/v2.01/wizaplace/users/natural
     methods: [POST]
     controller: App\Controller\Wallet\CreateWalletController
+    defaults:
+        gatewayName: App\Mangopay\Mangopay
 
 mangopay_wallets:
     path: /api/v1/mangopay/v2.01/wizaplace/users/{userId}/wallets

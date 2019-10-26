@@ -16,11 +16,6 @@ class CheckoutController extends AbstractController
 {
     public function __invoke(Request $request, GatewayInterface $gateway, StorageInterface $storage): Response
     {
-    	$transaction = $storage->saveTransaction('1234AEZ', 'file', ['token' => 'invalid']);
-
-    	$t = $storage->findTransaction($transaction->getId());
-
-    	var_dump($t); die;
         /** @var ResponseCheckout $response */
         $response = $gateway->execute(new Checkout($request->query->all()));
 

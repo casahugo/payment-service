@@ -1,3 +1,7 @@
+parameters:
+    env(STORAGE): 'file'
+    storage: 'file'
+
 framework:
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true

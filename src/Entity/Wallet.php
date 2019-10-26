@@ -36,6 +36,13 @@ class Wallet
         return $this->id;
     }
 
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getUserId(): ?int
     {
         return $this->user_id;
