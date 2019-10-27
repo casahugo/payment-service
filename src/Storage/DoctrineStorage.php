@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Bridge\DoctrineStorage;
+namespace App\Storage;
 
 use App\Entity\Hook;
 use App\Entity\Transaction;
@@ -13,7 +13,6 @@ use App\Repository\HookRepository;
 use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
-use App\Storage\StorageInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DoctrineStorage implements StorageInterface

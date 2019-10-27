@@ -3,8 +3,6 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
-parameters:
-
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -12,6 +10,7 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $actions: !tagged app.action
+            $storage: '@App\Storage\FileStorage'
 
     _instanceof:
         # services whose classes are instances of CustomInterface will be tagged automatically

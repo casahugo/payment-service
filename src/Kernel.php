@@ -2,18 +2,14 @@
 
 namespace App;
 
-use App\Storage\DoctrineStorage;
-use App\Storage\FileStorage;
-use App\Storage\StorageInterface;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
-class Kernel extends BaseKernel implements CompilerPassInterface
+class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
@@ -53,20 +49,5 @@ class Kernel extends BaseKernel implements CompilerPassInterface
         $routes->import($confDir.'/{routes}/'.$this->environment.'/**/*'.self::CONFIG_EXTS, '/', 'glob');
         $routes->import($confDir.'/{routes}/*'.self::CONFIG_EXTS, '/', 'glob');
         $routes->import($confDir.'/{routes}'.self::CONFIG_EXTS, '/', 'glob');
-    }
-
-    public function process(ContainerBuilder $container)
-    {
-        $storageType = $container->getParameter('storage');
-
-        if (false === \in_array($storageType, ['file', 'doctrine'])) {
-            throw new \LogicException('Invalid storage type.');
-        }
-
-        if ($storageType === 'doctrine') {
-            $container->setAlias(StorageInterface::class, DoctrineStorage::class);
-        } else {
-            $container->setAlias(StorageInterface::class, FileStorage::class);
-        }
     }
 }
