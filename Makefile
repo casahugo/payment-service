@@ -3,7 +3,7 @@ install:
 	composer install
 
 run:
-	./bin/console server:start
+	./bin/console server:start 0.0.0.0:5000
 
 stop:
 	bin/console server:stop

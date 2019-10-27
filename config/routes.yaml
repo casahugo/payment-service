@@ -30,6 +30,34 @@ lemonway_getmoneyintransdetails:
     defaults:
         gatewayName: App\Lemonway\Lemonway
 
+smoney_prepare:
+    path: /api/v1/smoney/payins/cardpayments
+    methods: [POST]
+    controller: App\Controller\Payment\PrepareController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_checkout:
+    path: /api/v1/smoney
+    methods: [GET]
+    controller: App\Controller\Payment\CheckoutController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_capture:
+    path: /api/v1/smoney
+    methods: [POST]
+    controller: App\Controller\Payment\CaptureController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_transaction:
+    path: /api/v1/smoney/payins/cardpayments/{id}
+    methods: [POST]
+    controller: App\Controller\Payment\TransactionController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
 mangopay_prepare:
     path: /api/v1/mangopay/v2.01/wizaplace/payins/card/web/
     methods: [POST]
