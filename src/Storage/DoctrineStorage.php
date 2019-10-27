@@ -15,7 +15,7 @@ use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class Storage
+class DoctrineStorage implements StorageInterface
 {
     /** @var TransactionRepository  */
     protected $transactionRepository;

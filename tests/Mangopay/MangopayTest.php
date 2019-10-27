@@ -18,7 +18,7 @@ use App\Mangopay\Mangopay;
 use App\Mangopay\Response\ResponseCapture;
 use App\Mangopay\Response\ResponsePrepare;
 use App\Mangopay\Response\ResponseTransaction;
-use App\Storage\Storage;
+use App\Storage\StorageInterface;
 use GuzzleHttp\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ class MangopayTest extends TestCase
 
     public function testPrepareAction(): void
     {
-        $storage = $this->createMock(Storage::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->method('saveTransaction')->willReturn((new Transaction())->setId(1));
 
         $router = $this->createMock(RouterInterface::class);
@@ -77,7 +77,7 @@ class MangopayTest extends TestCase
             'ReturnURL' => 'http://www.return-site.com/returnURL/',
         ];
 
-        $storage = $this->createMock(Storage::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->method('findTransaction')->willReturn(
             (new Transaction())->setId(1)->setData($excepted)
         );
@@ -95,7 +95,7 @@ class MangopayTest extends TestCase
 
     public function testCheckoutAction(): void
     {
-        $storage = $this->createMock(Storage::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->method('findTransaction')->willReturn(
             (new Transaction())
                 ->setId(static::TRANSACTION_ID)
@@ -120,7 +120,7 @@ class MangopayTest extends TestCase
 
     public function testTransactionAction(): void
     {
-        $storage = $this->createMock(Storage::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->method('findTransaction')->willReturn(
             (new Transaction())->setId(1)->setData([])
         );

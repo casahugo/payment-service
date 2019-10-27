@@ -6,10 +6,10 @@ namespace App\Storage;
 
 trait TraitStorageAware
 {
-    /** @var Storage  */
+    /** @var StorageInterface  */
     protected $storage;
 
-    public function setStorage(Storage $storage)
+    public function setStorage(StorageInterface $storage)
     {
         $this->storage = $storage;
 

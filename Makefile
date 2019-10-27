@@ -1,21 +1,19 @@
-start:
-	docker/start.sh
-	make install
+install:
+	make clear
+	composer install
+
+run:
+	./bin/console server:start
 
 stop:
-	cd docker; \
-	docker-compose stop -t 10; \
-	cd -;
+	bin/console server:stop
 
-restart: stop start
+logs:
+	tail -f var/log/dev.log
 
-install:
-	cd docker; \
-	docker-compose exec php bin/install;
-
-shell:
-	cd docker; \
-	docker-compose exec php bash;
+clear:
+	bin/console cache:clear
+	rm -r var/database
 
 check:
 	make test
@@ -23,13 +21,10 @@ check:
 	make phpcs
 
 test:
-	cd docker; \
-    docker-compose exec php ./vendor/bin/phpunit;
+	./vendor/bin/phpunit
 
 phpstan:
-	cd docker; \
-	docker-compose exec php ./vendor/bin/phpstan analyse --ansi -c phpstan.neon;
+	./vendor/bin/phpstan analyse --ansi -c phpstan.neon
 
 phpcs:
-	cd docker; \
-	docker-compose exec php ./vendor/bin/phpcs;
+	./vendor/bin/phpcs

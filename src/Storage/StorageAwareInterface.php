@@ -6,5 +6,5 @@ namespace App\Storage;
 
 interface StorageAwareInterface
 {
-    public function setStorage(Storage $storage);
+    public function setStorage(StorageInterface $storage);
 }

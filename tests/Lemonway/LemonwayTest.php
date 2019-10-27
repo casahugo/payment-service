@@ -18,7 +18,7 @@ use App\Lemonway\Lemonway;
 use App\Lemonway\Response\ResponseCapture;
 use App\Lemonway\Response\ResponsePrepare;
 use App\Lemonway\Response\ResponseTransaction;
-use App\Storage\Storage;
+use App\Storage\StorageInterface;
 use GuzzleHttp\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +32,7 @@ class LemonwayTest extends TestCase
 
     public function testPrepareAction(): void
     {
-        $storage = $this->createMock(Storage::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->method('saveTransaction')->willReturn(
             (new Transaction())
                 ->setId(1)
@@ -73,7 +73,7 @@ class LemonwayTest extends TestCase
     public function testCaptureAction(): void
     {
         $returnUrl = 'http://example.com/returnUrl';
-        $storage = $this->createMock(Storage::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->method('findTransaction')->willReturn(
             (new Transaction())
                 ->setId(static::TRANSACTION_ID)
@@ -99,7 +99,7 @@ class LemonwayTest extends TestCase
 
     public function testCheckoutAction(): void
     {
-        $storage = $this->createMock(Storage::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->method('findTransaction')->willReturn(
             (new Transaction())
                 ->setId(static::TRANSACTION_ID)
@@ -134,7 +134,7 @@ class LemonwayTest extends TestCase
             ])
             ;
 
-        $storage = $this->createMock(Storage::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->method('findTransaction')->willReturn($transaction);
 
         $gateway = new Lemonway(
@@ -159,7 +159,7 @@ class LemonwayTest extends TestCase
 
     public function testErrorAuthentication(): void
     {
-        $storage = $this->createMock(Storage::class);
+        $storage = $this->createMock(StorageInterface::class);
         $gateway = new Lemonway([new PrepareAction()], $storage, $this->createMock(RouterInterface::class));
 
         static::expectException(InvalidOptionsException::class);
