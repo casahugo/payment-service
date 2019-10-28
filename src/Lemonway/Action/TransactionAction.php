@@ -4,33 +4,22 @@ declare(strict_types=1);
 
 namespace App\Lemonway\Action;
 
-use App\Gateway\Action\AbstractAction;
+use App\ArrayableInterface;
+use App\Gateway\Action\ActionInterface;
 use App\Gateway\Request\Transaction;
 use App\Gateway\TransactionInterface;
 use App\Lemonway\Lemonway;
 use App\Lemonway\Response\ResponseTransaction;
 
-class TransactionAction extends AbstractAction
+class TransactionAction implements ActionInterface
 {
     /**
      * @param TransactionInterface $request
-     * @return ResponseTransaction
+     * @return ArrayableInterface
      */
-    public function execute($request)
+    public function execute($request): ArrayableInterface
     {
-        $transaction = $this->storage->findTransaction(
-            $request->getId(),
-            $request->getReference()
-        );
-
-        $data = $transaction->getData();
-
-        return new ResponseTransaction(
-            $transaction->getId(),
-            $data['wallet'],
-            (float) $data['amountTot'],
-            $data['comment']
-        );
+        return new ResponseTransaction($request);
     }
 
     public function supports($request, string $class): bool

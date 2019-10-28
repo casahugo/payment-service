@@ -31,8 +31,9 @@ class MangopayTest extends TestCase
 
     public function testPrepareAction(): void
     {
+        $transaction = (new Transaction())->setId(1);
         $storage = $this->createMock(StorageInterface::class);
-        $storage->method('saveTransaction')->willReturn((new Transaction())->setId(1));
+        $storage->method('saveTransaction')->willReturn($transaction);
 
         $router = $this->createMock(RouterInterface::class);
         $router->method('generate')->willReturn('http://www.my-site.com/returnURL/');
@@ -67,40 +68,36 @@ class MangopayTest extends TestCase
         ));
 
         static::assertInstanceOf(ResponsePrepare::class, $response);
-        static::assertEquals(new ResponsePrepare(1, 'http://www.my-site.com/returnURL/', $data), $response);
+        static::assertEquals(new ResponsePrepare($transaction, 'http://www.my-site.com/returnURL/'), $response);
     }
 
     public function testCaptureAction(): void
     {
-        $excepted = [
+        $transaction = (new Transaction())->setId(1)->setData([
             'RedirectUrl' => 'http://www.return-site.com/returnURL/',
             'ReturnURL' => 'http://www.return-site.com/returnURL/',
-        ];
+        ]);
 
         $storage = $this->createMock(StorageInterface::class);
-        $storage->method('findTransaction')->willReturn(
-            (new Transaction())->setId(1)->setData($excepted)
-        );
+        $storage->method('findTransaction')->willReturn($transaction);
 
         $gateway = new Mangopay([new CaptureAction()], $storage, $this->createMock(RouterInterface::class));
 
-        $response = $gateway->execute(new Capture('1'));
+        $response = $gateway->execute(new Capture($transaction->getId()));
 
         static::assertInstanceOf(ResponseCapture::class, $response);
-        static::assertEquals(
-            new ResponseCapture($excepted['RedirectUrl'], $excepted['ReturnURL'], 1),
-            $response
-        );
+        static::assertEquals(new ResponseCapture($transaction), $response);
     }
 
     public function testCheckoutAction(): void
     {
+        $transaction = (new Transaction())
+            ->setId(static::TRANSACTION_ID)
+            ->setReference(static::REFERENCE)
+            ;
+
         $storage = $this->createMock(StorageInterface::class);
-        $storage->method('findTransaction')->willReturn(
-            (new Transaction())
-                ->setId(static::TRANSACTION_ID)
-                ->setReference(static::REFERENCE)
-        );
+        $storage->method('findTransaction')->willReturn($transaction);
 
         $gateway = new Mangopay(
             [new CheckoutAction()],
@@ -110,11 +107,11 @@ class MangopayTest extends TestCase
 
         /** @var ResponseCheckout $response */
         $response = $gateway->execute(new Checkout(['transactionId' => static::TRANSACTION_ID]));
-        $exceptedResponse = new ResponseCheckout(static::REFERENCE, new Uri(null));
+        $exceptedResponse = new ResponseCheckout($transaction, new Uri(null));
 
         static::assertInstanceOf(ResponseCheckout::class, $response);
         static::assertEquals($exceptedResponse, $response);
-        static::assertSame($exceptedResponse->getReference(), static::REFERENCE);
+        static::assertSame($exceptedResponse->getTransaction()->getReference(), static::REFERENCE);
         static::assertSame((string) $exceptedResponse->getAction(), '');
     }
 

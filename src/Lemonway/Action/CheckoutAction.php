@@ -7,26 +7,20 @@ namespace App\Lemonway\Action;
 use App\Gateway\Action\AbstractAction;
 use App\Gateway\Request\Checkout;
 use App\Gateway\Response\ResponseCheckout;
-use App\Gateway\RouterAwareInterface;
-use App\Gateway\TraitRouterAware;
 use App\Lemonway\Lemonway;
 use GuzzleHttp\Psr7\Uri;
 
-class CheckoutAction extends AbstractAction implements RouterAwareInterface
+class CheckoutAction extends AbstractAction
 {
-    use TraitRouterAware;
-
     /**
      * @param Checkout $request
      * @return ResponseCheckout
      */
-    public function execute($request)
+    public function execute($request): ResponseCheckout
     {
-        $transaction = $this->storage->findTransaction(null, $request->toArray()['moneyInToken'] ?? null);
-
         return new ResponseCheckout(
-            $transaction->getReference(),
-            new Uri($this->router->generate('lemonway_postmoneyintoken'))
+            $request->getTransaction(),
+            new Uri($this->router->generate('lemonway_capture'))
         );
     }
 

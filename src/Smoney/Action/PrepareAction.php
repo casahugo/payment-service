@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Smoney\Action;
 
 use App\ArrayableInterface;
+use App\Controller\Payment\CheckoutController;
 use App\Enum\PaymentType;
 use App\Gateway\Action\AbstractAction;
 use App\Gateway\Request\Prepare;
@@ -31,9 +32,8 @@ class PrepareAction extends AbstractAction implements RouterAwareInterface
         );
 
         return new ResponsePrepare(
-            $transaction->getId(),
-            $this->router->generate('smoney_checkout', ['transactionId' => $transaction->getId()]),
-            $request->toArray()
+            $transaction,
+            $this->router->generate(CheckoutController::class, ['transactionId' => $transaction->getId()])
         );
     }
 

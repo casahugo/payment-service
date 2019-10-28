@@ -4,25 +4,26 @@ declare(strict_types=1);
 
 namespace App\Gateway\Response;
 
+use App\Gateway\TransactionInterface;
 use Psr\Http\Message\UriInterface;
 
 class ResponseCheckout
 {
-    /** @var string  */
-    private $reference;
+    /** @var TransactionInterface  */
+    private $transaction;
 
     /** @var UriInterface  */
     private $action;
 
-    public function __construct(string $reference, UriInterface $action)
+    public function __construct(TransactionInterface $transaction, UriInterface $action)
     {
-        $this->reference = $reference;
+        $this->transaction = $transaction;
         $this->action = $action;
     }
 
-    public function getReference(): string
+    public function getTransaction(): TransactionInterface
     {
-        return $this->reference;
+        return $this->transaction;
     }
 
     public function getAction(): UriInterface

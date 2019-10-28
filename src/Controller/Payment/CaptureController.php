@@ -19,7 +19,7 @@ class CaptureController
 
         /** @var ResponseCaptureInterface $response */
         $response = $gateway->execute(new Capture(
-            $request->request->get('token', 'invalid'),
+            $request->request->getInt('transactionId', 0),
             $error
         ));
 

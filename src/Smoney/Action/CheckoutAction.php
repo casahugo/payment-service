@@ -16,12 +16,14 @@ class CheckoutAction extends AbstractAction implements RouterAwareInterface
 {
     use TraitRouterAware;
 
+    /**
+     * @param Checkout $request
+     * @return ResponseCheckout
+     */
     public function execute($request)
     {
-        $transaction = $this->storage->findTransaction($request->toArray()['transactionId'] ?? null);
-
         return new ResponseCheckout(
-            $transaction->getReference(),
+            $request->getTransaction(),
             new Uri($this->router->generate('smoney_capture'))
         );
     }

@@ -7,27 +7,19 @@ namespace App\Mangopay\Action;
 use App\Gateway\Action\AbstractAction;
 use App\Gateway\Request\Checkout;
 use App\Gateway\Response\ResponseCheckout;
-use App\Gateway\RouterAwareInterface;
-use App\Gateway\TraitRouterAware;
 use App\Mangopay\Mangopay;
 use GuzzleHttp\Psr7\Uri;
 
-class CheckoutAction extends AbstractAction implements RouterAwareInterface
+class CheckoutAction extends AbstractAction
 {
-    use TraitRouterAware;
-
     /**
      * @param Checkout $request
      * @return ResponseCheckout
      */
     public function execute($request)
     {
-        $id = $request->toArray()['transactionId'] ?? null;
-
-        $transaction = $this->storage->findTransaction((int) $id);
-
         return new ResponseCheckout(
-            $transaction->getReference(),
+            $request->getTransaction(),
             new Uri($this->router->generate('mangopay_capture'))
         );
     }

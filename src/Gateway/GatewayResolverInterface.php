@@ -12,5 +12,7 @@ interface GatewayResolverInterface
 
     public function resolveTransaction(array $data): TransactionInterface;
 
+    public function resolveCheckout(array $data);
+
     public function resolveUser(array $data): RequestCreateUser;
 }

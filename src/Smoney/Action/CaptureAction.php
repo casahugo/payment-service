@@ -17,12 +17,7 @@ class CaptureAction extends AbstractAction
      */
     public function execute($request)
     {
-        $transaction = $this->storage->findTransaction(null, $request->getToken());
-
-        $return = $transaction->getData()['UrlReturn'];
-        $callback = $transaction->getData()['UrlCallback'];
-
-        return new ResponseCapture($return, $callback, $transaction->getId(), $transaction->getReference());
+        return new ResponseCapture($request->getTransaction(), $request->hasErrors());
     }
 
     public function supports($request, string $class): bool

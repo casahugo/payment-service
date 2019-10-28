@@ -72,4 +72,9 @@ class LemonwayResolver extends OptionsResolver implements GatewayResolverInterfa
     {
         // TODO: Implement resolveUser() method.
     }
+
+    public function resolveCheckout(array $data): string
+    {
+        return (string) $this->setRequired(['moneyInToken'])->resolve($data)['moneyInToken'];
+    }
 }

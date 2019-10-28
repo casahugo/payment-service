@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lemonway\Response;
 
 use App\Gateway\Contract\ResponseCaptureInterface;
+use App\Gateway\TransactionInterface;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
 
@@ -19,11 +20,11 @@ class ResponseCapture implements ResponseCaptureInterface
     /** @var string  */
     private $endpoint;
 
-    public function __construct(string $endpoint, int $id, string $reference)
+    public function __construct(TransactionInterface $transaction, bool $error = false)
     {
-        $this->endpoint = $endpoint;
-        $this->id = $id;
-        $this->reference = $reference;
+        $this->endpoint = $error ? $transaction->getData()['errorUrl'] : $transaction->getData()['returnUrl'];
+        $this->id = $transaction->getId();
+        $this->reference = $transaction->getReference();
     }
 
     public function getCallback(): UriInterface

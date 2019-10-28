@@ -5,30 +5,26 @@ declare(strict_types=1);
 namespace App\Smoney\Response;
 
 use App\Gateway\Contract\ResponseCaptureInterface;
+use App\Gateway\TransactionInterface;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
 
 class ResponseCapture implements ResponseCaptureInterface
 {
-    /** @var int  */
-    private $id;
-
     /** @var string  */
     private $reference;
 
     /** @var string  */
     private $redirect;
-    /**
-     * @var string
-     */
+
+    /** @var  */
     private $callback;
 
-    public function __construct(string $redirect, string $callback, int $id, string $reference)
+    public function __construct(TransactionInterface $transaction, bool $error = false)
     {
-        $this->redirect = $redirect;
-        $this->id = $id;
-        $this->reference = $reference;
-        $this->callback = $callback;
+        $this->redirect = $transaction->getData()['UrlReturn'];
+        $this->reference = $transaction->getReference();
+        $this->callback = $transaction->getData()['UrlCallback'];
     }
 
     public function toArray(): array

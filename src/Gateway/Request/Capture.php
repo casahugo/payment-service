@@ -4,23 +4,45 @@ declare(strict_types=1);
 
 namespace App\Gateway\Request;
 
+use App\Gateway\TransactionInterface;
+
 class Capture
 {
-    /** @var string  */
-    private $token;
+    /** @var int  */
+    private $transactionId;
 
     /** @var bool  */
     private $errors;
 
-    public function __construct(string $token = null, bool $errors = false)
+    /** @var TransactionInterface */
+    private $transaction;
+
+    public function __construct(int $transactionId, bool $errors = false)
     {
-        $this->token = $token;
+        $this->transactionId = $transactionId;
         $this->errors = $errors;
     }
 
-    public function getToken(): string
+    public function getId(): int
     {
-        return $this->token;
+        return $this->transactionId;
+    }
+
+    public function getReference(): ?string
+    {
+        return null;
+    }
+
+    public function getTransaction(): ?TransactionInterface
+    {
+        return $this->transaction;
+    }
+
+    public function setTransaction(TransactionInterface $transaction): self
+    {
+        $this->transaction = $transaction;
+
+        return $this;
     }
 
     public function hasErrors(): bool

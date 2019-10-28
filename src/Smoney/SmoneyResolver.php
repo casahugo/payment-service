@@ -50,4 +50,9 @@ class SmoneyResolver extends OptionsResolver implements GatewayResolverInterface
     {
         // TODO: Implement resolveUser() method.
     }
+
+    public function resolveCheckout(array $data): int
+    {
+        return (int) $this->setRequired(['transactionId'])->resolve($data)['transactionId'];
+    }
 }

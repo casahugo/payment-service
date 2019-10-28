@@ -8,17 +8,13 @@ use App\ArrayableInterface;
 use App\Enum\PaymentType;
 use App\Gateway\Action\AbstractAction;
 use App\Gateway\Request\Prepare;
-use App\Gateway\RouterAwareInterface;
-use App\Gateway\TraitRouterAware;
 use App\Mangopay\Mangopay;
 use App\Mangopay\Response\ResponsePrepare;
 use Faker\Factory;
 use Symfony\Component\Routing\RouterInterface;
 
-class PrepareAction extends AbstractAction implements RouterAwareInterface
+class PrepareAction extends AbstractAction
 {
-    use TraitRouterAware;
-
     /**
      * @param ArrayableInterface $request
      * @return ArrayableInterface
@@ -32,11 +28,10 @@ class PrepareAction extends AbstractAction implements RouterAwareInterface
         );
 
         return new ResponsePrepare(
-            $transaction->getId(),
+            $transaction,
             $this->router->generate('mangopay_checkout', [
                 'transactionId' => $transaction->getId()
-            ], RouterInterface::ABSOLUTE_URL),
-            $request->toArray()
+            ], RouterInterface::ABSOLUTE_URL)
         );
     }
 

@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Gateway;
 
 use App\Gateway\Action\ActionInterface;
+use App\Gateway\Request\Capture;
+use App\Gateway\Request\Checkout;
+use App\Gateway\Request\Transaction;
 use App\Storage\StorageInterface;
 use App\Storage\StorageAwareInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -32,6 +35,16 @@ abstract class AbstractGateway implements GatewayInterface
         /** @var ActionInterface $action */
         foreach ($this->actions as $action) {
             if ($action->supports($request, static::class)) {
+                if ($request instanceof Capture or $request instanceof Checkout) {
+                    $request->setTransaction(
+                        $this->storage->findTransaction($request->getId(), $request->getReference())
+                    );
+                }
+
+                if ($request instanceof Transaction) {
+                    $request = $this->storage->findTransaction($request->getId(), $request->getReference());
+                }
+
                 if ($action instanceof StorageAwareInterface) {
                     $action->setStorage($this->storage);
                 }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Lemonway\Response;
 
 use App\ArrayableInterface;
+use App\Gateway\TransactionInterface;
+use Faker\Factory;
 
 class ResponsePrepare implements ArrayableInterface
 {
@@ -17,11 +19,13 @@ class ResponsePrepare implements ArrayableInterface
     /** @var int|null  */
     private $cardNumber;
 
-    public function __construct(string $reference, int $id, ?int $cardNumber = null)
+    public function __construct(TransactionInterface $transaction)
     {
-        $this->reference = $reference;
-        $this->id = $id;
-        $this->cardNumber = $cardNumber;
+        $this->reference = $transaction->getReference();
+        $this->id = $transaction->getId();
+        $this->cardNumber = (int) $transaction->getData()['registerCard'] === 1
+            ? Factory::create()->randomNumber()
+            : null;
     }
 
     public function toArray(): array

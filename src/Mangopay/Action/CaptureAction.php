@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Mangopay\Action;
 
-use App\Gateway\Action\AbstractAction;
+use App\Gateway\Action\ActionInterface;
 use App\Gateway\Request\Capture;
 use App\Mangopay\Mangopay;
 use App\Mangopay\Response\ResponseCapture;
 
-class CaptureAction extends AbstractAction
+class CaptureAction implements ActionInterface
 {
     /**
      * @param Capture $request
@@ -17,13 +17,7 @@ class CaptureAction extends AbstractAction
      */
     public function execute($request)
     {
-        $transaction = $this->storage->findTransaction(null, $request->getToken());
-
-        return new ResponseCapture(
-            $transaction->getData()['ReturnURL'],
-            $transaction->getData()['ReturnURL'],
-            $transaction->getId()
-        );
+        return new ResponseCapture($request->getTransaction(), $request->hasErrors());
     }
 
     public function supports($request, string $class): bool

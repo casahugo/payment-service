@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Smoney\Response;
 
 use App\ArrayableInterface;
+use App\Gateway\TransactionInterface;
 
 class ResponsePrepare implements ArrayableInterface
 {
@@ -18,11 +19,11 @@ class ResponsePrepare implements ArrayableInterface
      */
     private $data;
 
-    public function __construct(int $id, string $url, array $data)
+    public function __construct(TransactionInterface $transaction, string $url)
     {
-        $this->id = $id;
+        $this->id = $transaction->getId();
         $this->url = $url;
-        $this->data = $data;
+        $this->data = $transaction->getData();
     }
 
     public function toArray(): array

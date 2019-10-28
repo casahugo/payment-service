@@ -52,4 +52,9 @@ class MangopayResolver extends OptionsResolver implements GatewayResolverInterfa
                 ->resolve($data)
         );
     }
+
+    public function resolveCheckout(array $data): int
+    {
+        return (int) $this->setRequired(['transactionId'])->resolve($data)['transactionId'];
+    }
 }

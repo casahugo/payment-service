@@ -18,19 +18,19 @@ class PrepareAction extends AbstractAction
      * @param ArrayableInterface $request
      * @return ArrayableInterface
      */
-    public function execute($request)
+    public function execute($request): ArrayableInterface
     {
+        $request->toArray()['cardNumber'] = (int) $request->toArray()['registerCard'] === 1
+            ? Factory::create()->randomNumber()
+            : null;
+
         $transaction = $this->storage->saveTransaction(
             Factory::create()->md5,
             PaymentType::CREDITCARD,
             $request->toArray()
         );
 
-        return new ResponsePrepare(
-            $transaction->getReference(),
-            $transaction->getId(),
-            (int) $request->toArray()['registerCard'] === 1 ? Factory::create()->randomNumber() : null
-        );
+        return new ResponsePrepare($transaction);
     }
 
     public function supports($request, string $class): bool
