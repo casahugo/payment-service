@@ -10,7 +10,6 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $actions: !tagged app.action
-            $storage: '@App\Storage\FileStorage'
 
     _instanceof:
         # services whose classes are instances of CustomInterface will be tagged automatically
