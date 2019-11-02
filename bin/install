@@ -21,6 +21,5 @@ else
 fi
 
 bin/console cache:clear
-bin/console doctrine:database:create --if-not-exists
-bin/console doctrine:migrations:migrate --no-interaction
 bin/console assets:install
+php -S 0.0.0.0:5000 -t public

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Smoney\Action;
 
+use App\Entity\User;
 use App\Gateway\Action\AbstractAction;
-use App\Gateway\Request\User;
+use App\Gateway\Request\User as UserRequest;
 use App\Smoney\Response\ResponseUser;
 use App\Smoney\Smoney;
 use Faker\Factory;
@@ -13,7 +14,7 @@ use Faker\Factory;
 class GetUserAction extends AbstractAction
 {
     /**
-     * @param User $request
+     * @param UserRequest $request
      * @return ResponseUser
      */
     public function execute($request)
@@ -22,7 +23,7 @@ class GetUserAction extends AbstractAction
 
         if (\is_null($user)) {
             $user = $this->storage->saveUser(
-                (new \App\Entity\User())
+                (new User())
                     ->setId($request->getId())
                     ->setProcessorName(Smoney::class)
                     ->setFirstname(Factory::create()->firstName)
@@ -42,6 +43,6 @@ class GetUserAction extends AbstractAction
 
     public function supports($request, string $class): bool
     {
-        return $request instanceof User && $request->hasId() && Smoney::class === $class;
+        return $request instanceof UserRequest && $request->hasId() && Smoney::class === $class;
     }
 }

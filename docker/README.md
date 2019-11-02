@@ -20,7 +20,6 @@ Commands list:
 - restart: Stops and starts the Docker stack
 - install: Installs the project requirements:
   - vendor
-  - migrations
 - shell: Connects to the PHP service into Docker stack
 
 ## Access to website

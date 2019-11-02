@@ -1,14 +1,5 @@
 version: '3.5'
 services:
-    nginx:
-        build:
-            context: ..
-            dockerfile: docker/nginx/Dockerfile
-        ports:
-            - "${HTTP_PORT:-8891}:80"
-        volumes:
-            - ../public:/var/www/html/public
-
     php:
         build:
             context: ..
@@ -17,20 +8,5 @@ services:
                 UID: "${DOCKER_UID:-1000}"
         volumes:
             - ..:/var/www/html
-        extra_hosts:
-            - "wizaplace.loc:172.17.0.1"
-
-    mysql:
-        build:
-            context: mysql
-        command: --default-authentication-plugin=mysql_native_password
-        environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: payment
         ports:
-            - "${MYSQL_PORT:-4406}:3306"
-        volumes:
-            - mysql:/var/lib/mysql
-
-volumes:
-    mysql:
+            - "${HTTP_PORT:-8891}:5000"
