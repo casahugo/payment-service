@@ -1,10 +1,17 @@
 # Payment service
 Payment service mocking several processor to run in local
 
+[![CircleCI](https://circleci.com/gh/anthHugo/payment-service.svg?style=svg)](https://circleci.com/gh/anthHugo/payment-service)
+
+## Requirement
+```shell
+php 7.1.3
+```
+
 ## Install
 ```shell
 composer install
-./bin/console server:start
+./bin/console server:start 0.0.0.0:5000
 ```
 
 With [Docker](docker/README.md)
@@ -33,4 +40,9 @@ webkit_url: http://0.0.0.0:8000/api/v1/lemonway
 ### MangoPay 
 ```
 api_base_url: http://0.0.0.0:8000/api/v1/mangopay 
+```
+
+### Smoney 
+```
+api_base_url: http://0.0.0.0:8000/api/v1/smoney 
 ```
