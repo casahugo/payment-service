@@ -7,13 +7,20 @@ namespace App\Smoney;
 use App\Entity\Transaction;
 use App\Gateway\GatewayResolverInterface;
 use App\Gateway\TransactionInterface;
-use App\Mangopay\Response\RequestCreateUser;
+use App\Gateway\UserInterface;
+use App\Smoney\Response\RequestCreateUser;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SmoneyResolver extends OptionsResolver implements GatewayResolverInterface
 {
     public function resolvePrepare(array $data): array
     {
+        $this->setRequired([
+            'OrderId',
+            'UrlReturn',
+            'PayerInfo',
+        ]);
+
         $this->setDefined([
             'Id',
             'OrderId',
@@ -43,16 +50,26 @@ class SmoneyResolver extends OptionsResolver implements GatewayResolverInterface
 
     public function resolveTransaction(array $data): TransactionInterface
     {
-        return (new Transaction())->setId((int) $data['id']);
+        return (new Transaction())->setReference($data['reference']);
     }
 
-    public function resolveUser(array $data): RequestCreateUser
+    public function resolveUser(array $data): UserInterface
     {
-        // TODO: Implement resolveUser() method.
+        return new RequestCreateUser($this->setDefined([
+            'AppUserId',
+            'Type',
+            'Profile',
+            'Company'
+        ])->resolve($data));
     }
 
     public function resolveCheckout(array $data): int
     {
         return (int) $this->setRequired(['transactionId'])->resolve($data)['transactionId'];
+    }
+
+    public function resolveWallet(array $data)
+    {
+        // TODO: Implement resolveWallet() method.
     }
 }

@@ -8,10 +8,10 @@ use App\ArrayableInterface;
 
 abstract class Generic implements ArrayableInterface
 {
-    /** @var array  */
+    /** @var mixed  */
     private $data;
 
-    public function __construct(array $data)
+    public function __construct($data)
     {
         $this->data = $data;
     }

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Mangopay\Action;
+namespace App\Smoney\Action;
 
 use App\ArrayableInterface;
 use App\Gateway\Action\AbstractAction;
 use App\Gateway\UserInterface;
-use App\Mangopay\Mangopay;
-use App\Mangopay\Response\ResponseCreateUser;
+use App\Smoney\Response\ResponseCreateUser;
+use App\Smoney\Smoney;
 
 class CreateUserAction extends AbstractAction
 {
@@ -29,6 +29,6 @@ class CreateUserAction extends AbstractAction
 
     public function supports($request, string $class): bool
     {
-        return $request instanceof UserInterface && Mangopay::class === $class;
+        return $request instanceof UserInterface && Smoney::class === $class && is_null($request->getId());
     }
 }

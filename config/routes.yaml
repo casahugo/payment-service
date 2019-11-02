@@ -54,9 +54,23 @@ smoney_capture:
         gatewayName: App\Smoney\Smoney
 
 smoney_transaction:
-    path: /api/v1/smoney/payins/cardpayments/{id}
-    methods: [POST]
+    path: /api/v1/smoney/payins/cardpayments/{reference}
+    methods: [GET]
     controller: App\Controller\Payment\TransactionController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_create_user:
+    path: /api/v1/smoney/users
+    methods: [POST]
+    controller: App\Controller\Wallet\CreateWalletController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_user:
+    path: /api/v1/smoney/users/company-{id}
+    methods: [GET]
+    controller: App\Controller\Wallet\WalletController
     defaults:
         gatewayName: App\Smoney\Smoney
 

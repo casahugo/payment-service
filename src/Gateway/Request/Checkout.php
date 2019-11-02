@@ -6,7 +6,7 @@ namespace App\Gateway\Request;
 
 use App\Gateway\TransactionInterface;
 
-class Checkout extends Generic
+class Checkout
 {
     /** @var int|string  */
     private $id;

@@ -87,13 +87,11 @@ class Transaction implements TransactionInterface
 
     public function getData(): ?array
     {
-        $data = unserialize($this->data);
-
-        if (\is_array($data)) {
-            return $data;
+        if (is_array($this->data) or is_null($this->data)) {
+            return $this->data;
         }
 
-        return null;
+        return unserialize($this->data);
     }
 
     public function setData(?array $data): self

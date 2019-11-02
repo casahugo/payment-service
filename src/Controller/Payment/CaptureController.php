@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Payment;
 
-use App\Gateway\Contract\ResponseCaptureInterface;
+use App\Gateway\Response\ResponseCaptureInterface;
 use App\Gateway\GatewayInterface;
 use App\Gateway\Request\Capture;
 use GuzzleHttp\Client;

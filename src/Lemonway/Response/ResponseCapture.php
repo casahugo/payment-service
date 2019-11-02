@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lemonway\Response;
 
-use App\Gateway\Contract\ResponseCaptureInterface;
+use App\Gateway\Response\ResponseCaptureInterface;
 use App\Gateway\TransactionInterface;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;

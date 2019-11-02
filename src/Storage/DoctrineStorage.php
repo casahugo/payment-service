@@ -8,12 +8,12 @@ use App\Entity\Hook;
 use App\Entity\Transaction;
 use App\Entity\User;
 use App\Entity\Wallet;
+use App\Gateway\TransactionInterface;
 use App\Gateway\UserInterface;
 use App\Repository\HookRepository;
 use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DoctrineStorage implements StorageInterface
 {
@@ -41,45 +41,37 @@ class DoctrineStorage implements StorageInterface
         $this->walletRepository = $walletRepository;
     }
 
-    public function findTransaction(?int $id, ?string $reference = null): Transaction
+    public function findTransaction(?int $id, ?string $reference = null): ?TransactionInterface
     {
-        $transaction = null;
-
         if ($id > 0) {
-            $transaction =  $this->transactionRepository->findOneBy(['id' => $id]);
+            return $this->transactionRepository->findOneBy(['id' => $id]);
         }
 
         if (false === is_null($reference)) {
-            $transaction =  $this->transactionRepository->findOneBy(['reference' => $reference]);
+            return $this->transactionRepository->findOneBy(['reference' => $reference]);
         }
 
-        if (false === $transaction instanceof Transaction) {
-            throw new NotFoundHttpException('Transaction not found.');
-        }
-
-        return $transaction;
+        return null;
     }
 
-    public function saveTransaction(string $reference, string $type, array $data = []): Transaction
-    {
+    public function saveTransaction(
+        string $reference,
+        string $processor,
+        string $type,
+        array $data = []
+    ): TransactionInterface {
         return $this->transactionRepository->save(
             (new Transaction())
                 ->setReference($reference)
-                ->setProcessorName(static::class)
+                ->setProcessorName($processor)
                 ->setType($type)
                 ->setData($data)
         );
     }
 
-    public function findHook(int $id): Hook
+    public function findHook(int $id): ?Hook
     {
-        $hook = $this->hookRepository->find($id);
-
-        if (false === $hook instanceof Hook) {
-            throw new NotFoundHttpException('Hook not found.');
-        }
-
-        return $hook;
+        return $this->hookRepository->find($id);
     }
 
     /**
@@ -91,29 +83,17 @@ class DoctrineStorage implements StorageInterface
         return $this->hookRepository->findBy(['processorName' => $processorName]);
     }
 
-    public function findUser(int $id): User
+    public function findUser(int $id): ?UserInterface
     {
-        $user = $this->userRepository->find($id);
-
-        if (false === $user instanceof User) {
-            throw new NotFoundHttpException('User not found.');
-        }
-
-        return $user;
+        return $this->userRepository->find($id);
     }
 
-    public function findUserByEmail(string $email): User
+    public function findUserByEmail(string $email): ?UserInterface
     {
-        $user = $this->userRepository->findOneBy(['email' => $email]);
-
-        if (false === $user instanceof User) {
-            throw new NotFoundHttpException('User not found.');
-        }
-
-        return $user;
+        return $this->userRepository->findOneBy(['email' => $email]);
     }
 
-    public function saveUser(UserInterface $user): User
+    public function saveUser(UserInterface $user): UserInterface
     {
         return $this->userRepository->save(
             (new User())
@@ -161,10 +141,10 @@ class DoctrineStorage implements StorageInterface
 
     public function updateHook(int $id, string $url, string $status): Hook
     {
-        $hook = $this->hookRepository->find($id);
-
         return $this->hookRepository->save(
-            $hook->setUrl($url)
+            $this->hookRepository
+                ->find($id)
+                ->setUrl($url)
                 ->setStatus($status)
         );
     }

@@ -9,14 +9,19 @@ use App\Gateway\TransactionInterface;
 
 class ResponseTransaction implements ArrayableInterface
 {
+    /** @var TransactionInterface  */
+    private $transaction;
+
     public function __construct(TransactionInterface $transaction)
     {
+        $this->transaction = $transaction;
     }
 
     public function toArray(): array
     {
         return [
-            'Id' => null,
+            'Id' => $this->transaction->getId(),
+            'Status' => 1,
         ];
     }
 }

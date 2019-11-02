@@ -16,6 +16,7 @@ class CreateWalletController
 {
     public function __invoke(Request $request, GatewayInterface $gateway)
     {
+        // Specific to MangoPay
         if ($request->request->has('Owners')) {
             try {
                 /** @var ArrayableInterface $response */

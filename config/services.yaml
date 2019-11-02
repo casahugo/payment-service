@@ -36,3 +36,6 @@ services:
 
     App\Lemonway\Lemonway:
         public: true
+
+    App\Smoney\Smoney:
+        public: true

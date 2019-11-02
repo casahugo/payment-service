@@ -7,7 +7,7 @@ namespace App\Lemonway;
 use App\Entity\Transaction;
 use App\Gateway\GatewayResolverInterface;
 use App\Gateway\TransactionInterface;
-use App\Mangopay\Response\RequestCreateUser;
+use App\Gateway\UserInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LemonwayResolver extends OptionsResolver implements GatewayResolverInterface
@@ -68,13 +68,18 @@ class LemonwayResolver extends OptionsResolver implements GatewayResolverInterfa
         ];
     }
 
-    public function resolveUser(array $data): RequestCreateUser
+    public function resolveUser(array $data): UserInterface
     {
         // TODO: Implement resolveUser() method.
     }
 
     public function resolveCheckout(array $data): string
     {
-        return (string) $this->setRequired(['moneyInToken'])->resolve($data)['moneyInToken'];
+        return (string) $data['moneyInToken'];
+    }
+
+    public function resolveWallet(array $data)
+    {
+        // TODO: Implement resolveWallet() method.
     }
 }

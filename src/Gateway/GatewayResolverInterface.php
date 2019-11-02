@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Gateway;
 
-use App\Mangopay\Response\RequestCreateUser;
-
 interface GatewayResolverInterface
 {
     public function resolvePrepare(array $data): array;
@@ -14,5 +12,7 @@ interface GatewayResolverInterface
 
     public function resolveCheckout(array $data);
 
-    public function resolveUser(array $data): RequestCreateUser;
+    public function resolveWallet(array $data);
+
+    public function resolveUser(array $data): UserInterface;
 }

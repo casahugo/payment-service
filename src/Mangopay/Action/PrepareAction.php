@@ -23,6 +23,7 @@ class PrepareAction extends AbstractAction
     {
         $transaction = $this->storage->saveTransaction(
             Factory::create()->md5,
+            Mangopay::class,
             PaymentType::CREDITCARD,
             $request->toArray()
         );

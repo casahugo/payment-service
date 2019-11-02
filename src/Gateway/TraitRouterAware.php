@@ -11,7 +11,7 @@ trait TraitRouterAware
     /** @var RouterInterface  */
     protected $router;
 
-    public function setRouter(RouterInterface $router)
+    public function setRouter($router)
     {
         $this->router = $router;
     }

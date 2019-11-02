@@ -26,6 +26,7 @@ class PrepareAction extends AbstractAction
 
         $transaction = $this->storage->saveTransaction(
             Factory::create()->md5,
+            Lemonway::class,
             PaymentType::CREDITCARD,
             $request->toArray()
         );

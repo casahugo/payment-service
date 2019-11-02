@@ -17,6 +17,11 @@ class RequestCreateUser implements ArrayableInterface, UserInterface
         $this->data = $data;
     }
 
+    public function getId(): ?int
+    {
+        return null;
+    }
+
     public function getEmail(): string
     {
         return $this->data['Email'];

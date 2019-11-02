@@ -19,13 +19,11 @@ class GetUserAction extends AbstractAction
     {
         $user = $this->storage->findUser($request->getId());
 
-        return new ResponseUser($user->getId(), $user);
+        return new ResponseUser($user);
     }
 
     public function supports($request, string $class): bool
     {
-        return $request instanceof User &&
-            false === is_null($request->getId()) &&
-            Mangopay::class === $class;
+        return $request instanceof User && $request->hasId() && Mangopay::class === $class;
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Gateway\Contract;
+namespace App\Gateway\Response;
 
 use App\ArrayableInterface;
 use Psr\Http\Message\UriInterface;

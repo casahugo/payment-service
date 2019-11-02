@@ -34,19 +34,8 @@ class LemonwayTest extends TestCase
     {
         $transaction = (new Transaction())
             ->setId(1)
-            ->setReference(static::REFERENCE);
-
-        $storage = $this->createMock(StorageInterface::class);
-        $storage->method('saveTransaction')->willReturn($transaction);
-
-        $gateway = new Lemonway(
-            [new PrepareAction()],
-            $storage,
-            $this->createMock(RouterInterface::class)
-        );
-
-        $request = new Request([], [
-            'p' => array_merge($this->buildRequest(), [
+            ->setReference(static::REFERENCE)
+            ->setData([
                 'wallet' => 123456,
                 'amountTot' => 50.0,
                 'wkToken' => 'tokenValid',
@@ -58,9 +47,21 @@ class LemonwayTest extends TestCase
                 'autoCommission' => '0',
                 'isPreAuth' => '0',
                 'delayedDays' => '0',
-                'email' => 'contact@example.com'
+                'email' => 'contact@example.com',
+                'registerCard' => '0',
             ])
-        ]);
+        ;
+
+        $storage = $this->createMock(StorageInterface::class);
+        $storage->method('saveTransaction')->willReturn($transaction);
+
+        $gateway = new Lemonway(
+            [new PrepareAction()],
+            $storage,
+            $this->createMock(RouterInterface::class)
+        );
+
+        $request = new Request([], ['p' => array_merge($this->buildRequest(), $transaction->getData())]);
 
         $response = $gateway->execute(new Prepare(
             $gateway->resolver()->resolvePrepare($request->request->all())

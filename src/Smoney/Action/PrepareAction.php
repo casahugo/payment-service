@@ -5,20 +5,15 @@ declare(strict_types=1);
 namespace App\Smoney\Action;
 
 use App\ArrayableInterface;
-use App\Controller\Payment\CheckoutController;
 use App\Enum\PaymentType;
 use App\Gateway\Action\AbstractAction;
 use App\Gateway\Request\Prepare;
-use App\Gateway\RouterAwareInterface;
-use App\Gateway\TraitRouterAware;
 use App\Smoney\Response\ResponsePrepare;
 use App\Smoney\Smoney;
-use Faker\Factory;
+use Symfony\Component\Routing\RouterInterface;
 
-class PrepareAction extends AbstractAction implements RouterAwareInterface
+class PrepareAction extends AbstractAction
 {
-    use TraitRouterAware;
-
     /**
      * @param ArrayableInterface $request
      * @return ArrayableInterface
@@ -26,14 +21,17 @@ class PrepareAction extends AbstractAction implements RouterAwareInterface
     public function execute($request)
     {
         $transaction = $this->storage->saveTransaction(
-            Factory::create()->md5,
+            $request->toArray()['OrderId'],
+            Smoney::class,
             PaymentType::CREDITCARD,
             $request->toArray()
         );
 
         return new ResponsePrepare(
             $transaction,
-            $this->router->generate(CheckoutController::class, ['transactionId' => $transaction->getId()])
+            $this->router->generate('smoney_checkout', [
+                'transactionId' => $transaction->getId()
+            ], RouterInterface::ABSOLUTE_URL) ?? ''
         );
     }
 

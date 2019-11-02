@@ -12,10 +12,8 @@ use App\Gateway\TraitRouterAware;
 use App\Smoney\Smoney;
 use GuzzleHttp\Psr7\Uri;
 
-class CheckoutAction extends AbstractAction implements RouterAwareInterface
+class CheckoutAction extends AbstractAction
 {
-    use TraitRouterAware;
-
     /**
      * @param Checkout $request
      * @return ResponseCheckout
