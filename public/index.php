@@ -3,7 +3,7 @@
 use App\Kernel;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
-error_log('coucou');
+
 require dirname(__DIR__).'/config/bootstrap.php';
 
 if ($_SERVER['APP_DEBUG']) {

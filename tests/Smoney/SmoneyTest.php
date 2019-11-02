@@ -5,11 +5,21 @@ declare(strict_types=1);
 namespace App\Tests\Smoney;
 
 use App\Entity\Transaction;
+use App\Gateway\Request\Capture;
+use App\Gateway\Request\Checkout;
 use App\Gateway\Request\Prepare;
+use App\Gateway\Request\Transaction as RequestTransaction;
+use App\Gateway\Response\ResponseCheckout;
+use App\Smoney\Action\CaptureAction;
+use App\Smoney\Action\CheckoutAction;
 use App\Smoney\Action\PrepareAction;
+use App\Smoney\Action\TransactionAction;
+use App\Smoney\Response\ResponseCapture;
 use App\Smoney\Response\ResponsePrepare;
+use App\Smoney\Response\ResponseTransaction;
 use App\Smoney\Smoney;
 use App\Storage\StorageInterface;
+use GuzzleHttp\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -34,7 +44,7 @@ class SmoneyTest extends TestCase
         $gateway = new Smoney([new PrepareAction()], $storage, $router);
 
         $request = new Request([], [
-            'OrderId' => '1',
+            'OrderId' => 'sandbox_1',
             'IsMine' => false,
             'Amount' => 1550,
             'UrlReturn' => 'http://website.com/return',
@@ -61,16 +71,60 @@ class SmoneyTest extends TestCase
 
     public function testCaptureAction(): void
     {
-        static::assertTrue(true);
+        $transaction = (new Transaction())->setId(1)->setData([
+            'UrlReturn' => 'http://www.return-site.com/returnURL/',
+            'OrderId' => 'sandbox_1',
+        ]);
+
+        $storage = $this->createMock(StorageInterface::class);
+        $storage->method('findTransaction')->willReturn($transaction);
+
+        $gateway = new Smoney([new CaptureAction()], $storage, $this->createMock(RouterInterface::class));
+
+        $response = $gateway->execute(new Capture($transaction->getId()));
+
+        static::assertInstanceOf(ResponseCapture::class, $response);
+        static::assertEquals(new ResponseCapture($transaction), $response);
     }
 
     public function testCheckoutAction(): void
     {
-        static::assertTrue(true);
+        $transaction = (new Transaction())
+            ->setId(static::TRANSACTION_ID)
+            ->setReference(static::REFERENCE)
+        ;
+
+        $storage = $this->createMock(StorageInterface::class);
+        $storage->method('findTransaction')->willReturn($transaction);
+
+        $gateway = new Smoney(
+            [new CheckoutAction()],
+            $storage,
+            $this->createMock(RouterInterface::class)
+        );
+
+        /** @var ResponseCheckout $response */
+        $response = $gateway->execute(new Checkout(['transactionId' => static::TRANSACTION_ID]));
+        $exceptedResponse = new ResponseCheckout($transaction, new Uri(null));
+
+        static::assertInstanceOf(ResponseCheckout::class, $response);
+        static::assertEquals($exceptedResponse, $response);
+        static::assertSame($exceptedResponse->getTransaction()->getReference(), static::REFERENCE);
+        static::assertSame((string) $exceptedResponse->getAction(), '');
     }
 
     public function testTransactionAction(): void
     {
-        static::assertTrue(true);
+        $storage = $this->createMock(StorageInterface::class);
+        $storage->method('findTransaction')->willReturn(
+            (new Transaction())->setId(1)->setData([])
+        );
+
+        $gateway = new Smoney([new TransactionAction()], $storage, $this->createMock(RouterInterface::class));
+        $transaction = $gateway->execute(new RequestTransaction(
+            $gateway->resolver()->resolveTransaction(['reference' => 'sandbox_1'])
+        ));
+
+        static::assertInstanceOf(ResponseTransaction::class, $transaction);
     }
 }
