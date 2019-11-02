@@ -34,27 +34,29 @@ abstract class AbstractGateway implements GatewayInterface
     {
         /** @var ActionInterface $action */
         foreach ($this->actions as $action) {
-            if ($action->supports($request, static::class)) {
-                if ($request instanceof Capture or $request instanceof Checkout) {
-                    $request->setTransaction(
-                        $this->storage->findTransaction($request->getId(), $request->getReference())
-                    );
-                }
-
-                if ($request instanceof Transaction) {
-                    $request = $this->storage->findTransaction($request->getId(), $request->getReference());
-                }
-
-                if ($action instanceof StorageAwareInterface) {
-                    $action->setStorage($this->storage);
-                }
-
-                if ($action instanceof RouterAwareInterface) {
-                    $action->setRouter($this->router);
-                }
-
-                return $action->execute($request);
+            if (false === $action->supports($request, static::class)) {
+                continue;
             }
+
+            if ($request instanceof Capture or $request instanceof Checkout) {
+                $request->setTransaction(
+                    $this->storage->findTransaction($request->getId(), $request->getReference())
+                );
+            }
+
+            if ($request instanceof Transaction) {
+                $request = $this->storage->findTransaction($request->getId(), $request->getReference());
+            }
+
+            if ($action instanceof StorageAwareInterface) {
+                $action->setStorage($this->storage);
+            }
+
+            if ($action instanceof RouterAwareInterface) {
+                $action->setRouter($this->router);
+            }
+
+            return $action->execute($request);
         }
 
         throw new \LogicException('Unable to find supported action.');

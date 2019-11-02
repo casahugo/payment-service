@@ -7,8 +7,6 @@ namespace App\Smoney\Action;
 use App\Gateway\Action\AbstractAction;
 use App\Gateway\Request\Checkout;
 use App\Gateway\Response\ResponseCheckout;
-use App\Gateway\RouterAwareInterface;
-use App\Gateway\TraitRouterAware;
 use App\Smoney\Smoney;
 use GuzzleHttp\Psr7\Uri;
 
