@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Gateway;
+namespace App\Resolver;
 
+use App\Gateway\GatewayInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
