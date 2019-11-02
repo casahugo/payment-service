@@ -4,24 +4,20 @@ declare(strict_types=1);
 
 namespace App\Lemonway\Action;
 
-use App\Gateway\Action\AbstractAction;
+use App\Gateway\Action\ActionInterface;
 use App\Gateway\Request\Capture;
 use App\Lemonway\Lemonway;
 use App\Lemonway\Response\ResponseCapture;
 
-class CaptureAction extends AbstractAction
+class CaptureAction implements ActionInterface
 {
     /**
      * @param Capture $request
      * @return ResponseCapture
      */
-    public function execute($request)
+    public function execute($request): ResponseCapture
     {
-        $transaction = $this->storage->findTransaction(null, $request->getToken());
-
-        $return = $request->hasErrors() ? $transaction->getData()['errorUrl'] : $transaction->getData()['returnUrl'];
-
-        return new ResponseCapture($return, $transaction->getId(), $transaction->getReference());
+        return new ResponseCapture($request->getTransaction(), $request->hasErrors());
     }
 
     public function supports($request, string $class): bool

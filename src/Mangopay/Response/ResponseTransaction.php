@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mangopay\Response;
 
 use App\ArrayableInterface;
+use App\Gateway\TransactionInterface;
 
 class ResponseTransaction implements ArrayableInterface
 {
@@ -14,10 +15,10 @@ class ResponseTransaction implements ArrayableInterface
     /** @var array  */
     private $data;
 
-    public function __construct(int $id, array $data = [])
+    public function __construct(TransactionInterface $transaction)
     {
-        $this->id = $id;
-        $this->data = $data;
+        $this->id = $transaction->getId();
+        $this->data = $transaction->getData();
     }
 
     public function toArray(): array

@@ -7,6 +7,7 @@ namespace App\Mangopay;
 use App\Entity\Transaction;
 use App\Gateway\GatewayResolverInterface;
 use App\Gateway\TransactionInterface;
+use App\Gateway\UserInterface;
 use App\Mangopay\Response\RequestCreateUser;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -36,7 +37,7 @@ class MangopayResolver extends OptionsResolver implements GatewayResolverInterfa
         return (new Transaction())->setId((int) $data['id']);
     }
 
-    public function resolveUser(array $data): RequestCreateUser
+    public function resolveUser(array $data): UserInterface
     {
         return new RequestCreateUser(
             $this
@@ -51,5 +52,15 @@ class MangopayResolver extends OptionsResolver implements GatewayResolverInterfa
                 ])
                 ->resolve($data)
         );
+    }
+
+    public function resolveCheckout(array $data): int
+    {
+        return (int) $this->setRequired(['transactionId'])->resolve($data)['transactionId'];
+    }
+
+    public function resolveWallet(array $data)
+    {
+        // TODO: Implement resolveWallet() method.
     }
 }

@@ -6,7 +6,7 @@ namespace App\Gateway\Request;
 
 use App\Gateway\UserInterface;
 
-class User
+class User implements UserInterface
 {
     /** @var int|null  */
     private $id;
@@ -30,29 +30,30 @@ class User
         return false === is_null($this->id);
     }
 
-    public function getData(): ?UserInterface
-    {
-        return $this->data;
-    }
-
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         if ($this->data instanceof UserInterface) {
             return $this->data->getEmail();
         }
+
+        return '';
     }
 
-    public function getFirstname(): ?string
+    public function getFirstname(): string
     {
         if ($this->data instanceof UserInterface) {
             return $this->data->getFirstname();
         }
+
+        return '';
     }
 
-    public function getLastname(): ?string
+    public function getLastname(): string
     {
         if ($this->data instanceof UserInterface) {
             return $this->data->getLastname();
         }
+
+        return '';
     }
 }

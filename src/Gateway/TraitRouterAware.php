@@ -9,9 +9,9 @@ use Symfony\Component\Routing\RouterInterface;
 trait TraitRouterAware
 {
     /** @var RouterInterface  */
-    private $router;
+    protected $router;
 
-    public function setRouter(RouterInterface $router)
+    public function setRouter($router)
     {
         $this->router = $router;
     }

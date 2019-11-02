@@ -9,4 +9,6 @@ interface TransactionInterface
     public function getId(): ?int;
 
     public function getReference(): ?string;
+
+    public function getData(): ?array;
 }

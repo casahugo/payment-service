@@ -8,9 +8,9 @@ use App\Entity\Hook;
 use App\Entity\Transaction;
 use App\Entity\User;
 use App\Entity\Wallet;
+use App\Gateway\TransactionInterface;
 use App\Gateway\UserInterface;
 use Filebase\Database;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileStorage implements StorageInterface
 {
@@ -26,7 +26,7 @@ class FileStorage implements StorageInterface
         ]);
     }
 
-    public function findTransaction(?int $id, ?string $reference = null): Transaction
+    public function findTransaction(?int $id, ?string $reference = null): ?TransactionInterface
     {
         $transaction = null;
 
@@ -34,48 +34,54 @@ class FileStorage implements StorageInterface
             $transaction = $this->table(static::TRANSACTION)->get($id)->getData();
         }
 
-        if (\is_string($reference)) {
+        if (\is_null($transaction) && \is_string($reference)) {
             $transaction = current(
                 $this->table(static::TRANSACTION)->query()->where(['reference' => $reference])->results()
             );
         }
 
-        if (is_null($transaction) || false === \is_array($transaction)) {
-            throw new NotFoundHttpException('Transaction not found.');
-        }
-
         return (new Transaction())
             ->setId($transaction['id'])
             ->setType($transaction['type'])
-            ->setData($transaction['infos'])
+            ->setProcessorName($transaction['processorName'])
+            ->setData($transaction['extra'])
             ->setReference($transaction['reference'])
             ;
     }
 
-    public function saveTransaction(string $reference, string $type, array $data = []): Transaction
-    {
+    public function saveTransaction(
+        string $reference,
+        string $processor,
+        string $type,
+        array $data = []
+    ): TransactionInterface {
         $transaction = (new Transaction())
             ->setId(rand())
             ->setReference($reference)
             ->setType($type)
-            ->setProcessorName('')
+            ->setProcessorName($processor)
             ->setData($data);
 
         $document = $this->table(static::TRANSACTION)->get($transaction->getId());
 
         $document->reference = $reference;
         $document->type = $transaction->getType();
+        $document->processorName = $transaction->getProcessorName();
         $document->id = $transaction->getId();
-        $document->infos = $transaction->getData();
-        $document->transaction = $transaction;
+        $document->extra = $transaction->getData();
+
         $document->save();
 
         return $transaction;
     }
 
-    public function findHook(int $id): Hook
+    public function findHook(int $id): ?Hook
     {
         $hook = $this->table(static::HOOK)->get($id);
+
+        if (false === $hook['id']) {
+            return null;
+        }
 
         return (new Hook())
             ->setId($hook['id'])
@@ -127,12 +133,12 @@ class FileStorage implements StorageInterface
         // TODO: Implement updateHook() method.
     }
 
-    public function findUser(int $id): User
+    public function findUser(int $id): ?UserInterface
     {
         $user = $this->table(static::USER)->get($id)->getData();
 
-        if (false === \is_array($user)) {
-            throw new NotFoundHttpException('User ' . $id . ' not found');
+        if (false === \array_key_exists('id', $user)) {
+            return null;
         }
 
         return (new User())
@@ -149,10 +155,14 @@ class FileStorage implements StorageInterface
             ;
     }
 
-    public function findUserByEmail(string $email): User
+    public function findUserByEmail(string $email): ?UserInterface
     {
         $users = $this->table(static::USER)->query()->where(['email' => $email])->results();
         $user = current($users);
+
+        if (is_null($user)) {
+            return null;
+        }
 
         return (new User())
             ->setId($user['id'])
@@ -168,26 +178,34 @@ class FileStorage implements StorageInterface
             ;
     }
 
-    public function saveUser(UserInterface $user): User
+    public function saveUser(UserInterface $user): UserInterface
     {
-        $user = (new User())
-            ->setId(rand())
-            ->setEmail($user->getEmail())
-            ->setFirstname($user->getFirstname())
-            ->setLastname($user->getLastname())
+        if (false === $user instanceof User) {
+            $user = (new User())
+                ->setId($user->getId() ?? rand())
+                ->setEmail($user->getEmail())
+                ->setFirstname($user->getFirstname())
+                ->setLastname($user->getLastname())
+                ->setProcessorName('')
+                ->setMobile('')
+                ->setCity('')
+                ->setZipcode('')
+                ->setAddress('')
+                ->setBirthday('')
             ;
+        }
 
         $document = $this->table(static::USER)->get($user->getId());
         $document->id = $user->getId();
         $document->email = $user->getEmail();
         $document->firstname = $user->getFirstname();
         $document->lastname = $user->getLastname();
-        $document->processorName = 'processor';
-        $document->mobile = '066789745';
-        $document->city = 'Paris';
-        $document->zipcode = '75001';
-        $document->address = '';
-        $document->birthday = '';
+        $document->processorName = $user->getProcessorName();
+        $document->mobile = $user->getMobile();
+        $document->city = $user->getCity();
+        $document->zipcode = $user->getZipcode();
+        $document->address = $user->getAddress();
+        $document->birthday = $user->getBirthday();
         $document->save();
 
         return $user;

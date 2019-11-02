@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Payment;
 
-use App\Gateway\Contract\ResponseCaptureInterface;
+use App\Gateway\Response\ResponseCaptureInterface;
 use App\Gateway\GatewayInterface;
 use App\Gateway\Request\Capture;
 use GuzzleHttp\Client;
@@ -19,7 +19,7 @@ class CaptureController
 
         /** @var ResponseCaptureInterface $response */
         $response = $gateway->execute(new Capture(
-            $request->request->get('token', 'invalid'),
+            $request->request->getInt('transactionId', 0),
             $error
         ));
 

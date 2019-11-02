@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lemonway\Response;
 
 use App\ArrayableInterface;
+use App\Gateway\TransactionInterface;
 
 class ResponseTransaction implements ArrayableInterface
 {
@@ -25,12 +26,12 @@ class ResponseTransaction implements ArrayableInterface
      */
     private $comment;
 
-    public function __construct(int $id, string $wallet, float $amount, string $comment)
+    public function __construct(TransactionInterface $transaction)
     {
-        $this->id = $id;
-        $this->wallet = $wallet;
-        $this->amount = $amount;
-        $this->comment = $comment;
+        $this->id = $transaction->getId();
+        $this->wallet = $transaction->getData()['wallet'];
+        $this->amount = (float) $transaction->getData()['amountTot'];
+        $this->comment = $transaction->getData()['comment'];
     }
 
     public function toArray(): array

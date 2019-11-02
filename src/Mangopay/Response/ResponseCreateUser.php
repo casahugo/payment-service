@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace App\Mangopay\Response;
 
-use App\Gateway\Contract\ResponseCreateUserInterface;
+use App\ArrayableInterface;
 use App\Gateway\UserInterface;
 
-class ResponseCreateUser implements ResponseCreateUserInterface
+class ResponseCreateUser implements ArrayableInterface
 {
-    /** @var int  */
-    private $userId;
-
     /** @var UserInterface  */
     private $user;
 
-    public function __construct(int $userId, UserInterface $user)
+    public function __construct(UserInterface $user)
     {
         $this->user = $user;
-        $this->userId = $userId;
     }
 
     public function toArray(): array
@@ -45,7 +41,7 @@ class ResponseCreateUser implements ResponseCreateUserInterface
             'PersonType' => 'NATURAL',
             'Email' => $this->user->getEmail(),
             'KYCLevel' => 'LIGHT',
-            'Id' => $this->userId,
+            'Id' => $this->user->getId(),
             'Tag' => '',
             'CreationDate' => '1570999210',
         ];

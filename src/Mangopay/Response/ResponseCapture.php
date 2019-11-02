@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Mangopay\Response;
 
-use App\ArrayableInterface;
-use App\Gateway\Contract\ResponseCaptureInterface;
+use App\Gateway\Response\ResponseCaptureInterface;
+use App\Gateway\TransactionInterface;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
 
@@ -16,16 +16,19 @@ class ResponseCapture implements ResponseCaptureInterface
 
     /** @var string  */
     private $redirectUrl;
-    /**
-     * @var string
-     */
+
+    /** @var string */
     private $callbackUrl;
 
-    public function __construct(string $redirectUrl, string $callbackUrl, int $id)
+    /** @var bool  */
+    private $error;
+
+    public function __construct(TransactionInterface $transaction, bool $error = false)
     {
-        $this->redirectUrl = $redirectUrl;
-        $this->callbackUrl = $callbackUrl;
-        $this->id = $id;
+        $this->redirectUrl = $transaction->getData()['ReturnURL'];
+        $this->callbackUrl = $transaction->getData()['ReturnURL'];
+        $this->id = $transaction->getId();
+        $this->error = $error;
     }
 
     public function getCallback(): UriInterface

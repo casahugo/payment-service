@@ -2,34 +2,79 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
-lemonway_moneyinwebinit:
+# Lemonway
+lemonway_prepare:
     path: /api/v1/lemonway/MoneyInWebInit
     methods: [POST]
     controller: App\Controller\Payment\PrepareController
     defaults:
         gatewayName: App\Lemonway\Lemonway
 
-lemonway_moneyintoken:
+lemonway_checkout:
     path: /api/v1/lemonway
     methods: [GET]
     controller: App\Controller\Payment\CheckoutController
     defaults:
         gatewayName: App\Lemonway\Lemonway
 
-lemonway_postmoneyintoken:
+lemonway_capture:
     path: /api/v1/lemonway
     methods: [POST]
     controller: App\Controller\Payment\CaptureController
     defaults:
         gatewayName: App\Lemonway\Lemonway
 
-lemonway_getmoneyintransdetails:
+lemonway_transaction:
     path: /api/v1/lemonway/GetMoneyInTransDetails
     methods: [POST]
     controller: App\Controller\Payment\TransactionController
     defaults:
         gatewayName: App\Lemonway\Lemonway
 
+# Smoney
+smoney_prepare:
+    path: /api/v1/smoney/payins/cardpayments
+    methods: [POST]
+    controller: App\Controller\Payment\PrepareController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_checkout:
+    path: /api/v1/smoney
+    methods: [GET]
+    controller: App\Controller\Payment\CheckoutController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_capture:
+    path: /api/v1/smoney
+    methods: [POST]
+    controller: App\Controller\Payment\CaptureController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_transaction:
+    path: /api/v1/smoney/payins/cardpayments/{reference}
+    methods: [GET]
+    controller: App\Controller\Payment\TransactionController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_create_user:
+    path: /api/v1/smoney/users
+    methods: [POST]
+    controller: App\Controller\Wallet\CreateWalletController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+smoney_user:
+    path: /api/v1/smoney/users/company-{id}
+    methods: [GET]
+    controller: App\Controller\Wallet\WalletController
+    defaults:
+        gatewayName: App\Smoney\Smoney
+
+# Mangopay
 mangopay_prepare:
     path: /api/v1/mangopay/v2.01/wizaplace/payins/card/web/
     methods: [POST]

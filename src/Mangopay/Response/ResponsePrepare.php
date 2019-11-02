@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mangopay\Response;
 
 use App\ArrayableInterface;
+use App\Gateway\TransactionInterface;
 
 class ResponsePrepare implements ArrayableInterface
 {
@@ -17,10 +18,10 @@ class ResponsePrepare implements ArrayableInterface
     /** @var array  */
     private $data;
 
-    public function __construct(int $id, string $redirectUrl, array $data = null)
+    public function __construct(TransactionInterface $transaction, string $redirectUrl)
     {
-        $this->id = $id;
-        $this->data = $data;
+        $this->id = $transaction->getId();
+        $this->data = $transaction->getData();
         $this->redirectUrl = $redirectUrl;
     }
 

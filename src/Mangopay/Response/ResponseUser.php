@@ -5,36 +5,16 @@ declare(strict_types=1);
 namespace App\Mangopay\Response;
 
 use App\ArrayableInterface;
-use App\Gateway\Contract\ResponseUserInterface;
 use App\Gateway\UserInterface;
 
-class ResponseUser implements ResponseUserInterface
+class ResponseUser implements ArrayableInterface
 {
-    /** @var int  */
-    private $userId;
-
     /** @var UserInterface  */
     private $user;
 
-    public function __construct(int $userId, UserInterface $user)
+    public function __construct(UserInterface $user)
     {
-        $this->userId = $userId;
         $this->user = $user;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->user->getEmail();
-    }
-
-    public function getFirstname(): string
-    {
-        return $this->user->getFirstname();
-    }
-
-    public function getLastname(): string
-    {
-        return $this->user->getLastname();
     }
 
     public function toArray(): array
@@ -72,7 +52,7 @@ class ResponseUser implements ResponseUserInterface
             'PersonType' => 'LEGAL',
             'Email' => $this->user->getEmail(),
             'KYCLevel' => 'LIGHT',
-            'Id' => $this->userId,
+            'Id' => $this->user->getId(),
             'Tag' => 'custom meta',
             'CreationDate' => '1442181882',
         ];
