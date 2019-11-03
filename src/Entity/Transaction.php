@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\ArrayableInterface;
 use App\Gateway\TransactionInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
  */
-class Transaction implements TransactionInterface
+class Transaction implements TransactionInterface, ArrayableInterface
 {
     /**
      * @ORM\Id()
@@ -98,5 +99,16 @@ class Transaction implements TransactionInterface
         $this->data = serialize($data);
 
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'reference' => $this->getReference(),
+            'processorName' => $this->getProcessorName(),
+            'type' => $this->getType(),
+            'data' => $this->getData(),
+        ];
     }
 }

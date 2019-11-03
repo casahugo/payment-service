@@ -1,7 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <b-card-group deck>
+<b-row>
+    <b-col xl="8" md="12" class="mb-4">
         <b-card header="Transactions" header-class="font-weight-bold" header-text-variant="light" header-bg-variant="dark">
             <b-list-group v-for="transaction in transactions">
                 <b-list-group-item href="#" class="d-flex justify-content-between align-items-center" variant="" v-on:click="transaction.active = !transaction.active">
@@ -16,7 +17,9 @@
                 <pre v-show="transaction.active" v-highlightjs><code class="php"> ${transaction.data}</code></pre>
             </b-list-group>
         </b-card>
+    </b-col>
 
+    <b-col xl="4" md="12" class="mb-4">
         <b-card header="Users" header-class="font-weight-bold" header-text-variant="light" header-bg-variant="dark">
             <b-list-group v-for="user in users">
                 <b-list-group-item href="#" class="d-flex justify-content-between align-items-center" variant="" v-on:click="user.active = !user.active">
@@ -31,5 +34,6 @@
                 <pre v-show="user.active" v-highlightjs><code class="php">${user}</code></pre>
             </b-list-group>
         </b-card>
-    </b-card-group>
+    </b-col>
+</b-row>
 {% endblock %}

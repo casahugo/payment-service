@@ -11,6 +11,8 @@ use App\Entity\Wallet;
 use App\Gateway\TransactionInterface;
 use App\Gateway\UserInterface;
 use Filebase\Database;
+use Symfony\Component\Mercure\Publisher;
+use Symfony\Component\Mercure\Update;
 
 class FileStorage implements StorageInterface
 {
@@ -19,11 +21,12 @@ class FileStorage implements StorageInterface
     private const WALLET = 'wallet';
     private const HOOK = 'hook';
 
-    private function table(string $name): Database
+    /** @var Publisher  */
+    private $publisher;
+
+    public function __construct(Publisher $publisher)
     {
-        return new Database([
-            'dir' => '../var/database/' . $name
-        ]);
+        $this->publisher = $publisher;
     }
 
     public function findTransactions(): array
@@ -84,6 +87,8 @@ class FileStorage implements StorageInterface
         $document->extra = $transaction->getData();
 
         $document->save();
+
+        $this->publish(static::TRANSACTION, $transaction->toArray());
 
         return $transaction;
     }
@@ -271,5 +276,22 @@ class FileStorage implements StorageInterface
                 ->setDescription($wallet['description'])
                 ;
         }, $wallets);
+    }
+
+    private function publish(string $name, array $data): self
+    {
+        call_user_func(
+            $this->publisher,
+            new Update($name, json_encode(['data' => $data]))
+        );
+
+        return $this;
+    }
+
+    private function table(string $name): Database
+    {
+        return new Database([
+            'dir' => '../var/database/' . $name
+        ]);
     }
 }
