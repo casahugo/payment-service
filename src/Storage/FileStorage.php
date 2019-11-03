@@ -33,13 +33,13 @@ class FileStorage implements StorageInterface
     {
         return array_map(function ($transaction): TransactionInterface {
             return (new Transaction())
-                ->setId($transaction->id)
-                ->setType($transaction->type)
-                ->setProcessorName($transaction->processorName)
-                ->setData($transaction->extra)
-                ->setReference($transaction->reference)
+                ->setId($transaction['id'])
+                ->setType($transaction['type'])
+                ->setProcessorName($transaction['processorName'])
+                ->setData($transaction['extra'])
+                ->setReference($transaction['reference'])
                 ;
-        }, $this->table(static::TRANSACTION)->findAll());
+        }, $this->table(static::TRANSACTION)->query()->orderBy('__created_at', 'DESC')->results());
     }
 
     public function findTransaction(?int $id, ?string $reference = null): ?TransactionInterface
