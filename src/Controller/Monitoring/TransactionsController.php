@@ -14,9 +14,7 @@ class TransactionsController
     {
         return new JsonResponse([
             'items' => \array_map(function (Transaction $transaction): array {
-                return \array_merge($transaction->toArray(), [
-                    'active' => false,
-                ]);
+                return $transaction->toArray();
             }, $storage->findTransactions())
         ]);
     }

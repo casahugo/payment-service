@@ -109,6 +109,7 @@ class Transaction implements TransactionInterface, ArrayableInterface
             'processorName' => $this->getProcessorName(),
             'type' => $this->getType(),
             'data' => $this->getData(),
+            'active' => false,
         ];
     }
 }

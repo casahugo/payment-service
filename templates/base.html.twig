@@ -79,15 +79,13 @@
 </head>
 <body>
 <div id="app">
-    <b-navbar toggleable="lg" type="dark" variant="dark" class="mb-4">
-        <b-navbar-brand href="#">Paymock</b-navbar-brand>
+    <b-navbar toggleable="lg" type="dark" variant="dark" style="z-index: 100">
+        <b-navbar-brand href="/">Paymock</b-navbar-brand>
     </b-navbar>
 
-    <b-container fluid="true">
-        <b-col>
-            {% block body %}{% endblock %}
-        </b-col>
-    </b-container>
+    {% block body %}{% endblock %}
+
+
 </div>
 <!-- Load polyfills to support older browsers -->
 <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
@@ -119,22 +117,29 @@
             targets.forEach((target) => {
                 if (binding.value) {
                     target.textContent = binding.value
-                    hljs.highlightBlock(target)
                 }
+                hljs.highlightBlock(target)
             })
         }
     });
 
     const eventTransaction = new EventSource('http://localhost:5001/hub?topic=' + encodeURIComponent('transaction'));
+    const eventRequest = new EventSource('http://localhost:5001/hub?topic=' + encodeURIComponent('request'));
 
     new Vue({
         el: '#app',
         delimiters: ['${', '}'],
         data : function() {
            return {
-               transactions: null,
-               users: null,
+               requests: [],
+               transactions: [],
+               users: [],
            }
+        },
+        methods: {
+          monitoring: function()  {
+              return this.requests
+          }
         },
         mounted: function() {
             axios
@@ -147,6 +152,10 @@
 
             eventTransaction.onmessage = event => {
                 this.transactions.unshift(JSON.parse(event.data).data)
+            };
+
+            eventRequest.onmessage = event => {
+                this.requests.push(new Object(JSON.parse(event.data)));
             };
         },
     });

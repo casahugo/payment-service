@@ -1,39 +1,56 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<b-row>
-    <b-col xl="8" md="12" class="mb-4">
-        <b-card header="Transactions" header-class="font-weight-bold" header-text-variant="light" header-bg-variant="dark">
-            <b-list-group v-for="transaction in transactions">
-                <b-list-group-item href="#" class="d-flex justify-content-between align-items-center" variant="" v-on:click="transaction.active = !transaction.active">
-                    <div>
-                        <b-badge variant="primary" pill>${transaction.id}</b-badge>
-                        <b-badge>reference: ${transaction.reference}</b-badge>
-                        <b-badge variant="warning">${transaction.type}</b-badge>
-                    </div>
 
-                    <b-badge variant="primary" pill>${transaction.processorName}</b-badge>
-                </b-list-group-item>
-                <pre v-show="transaction.active" v-highlightjs><code class="php"> ${transaction.data}</code></pre>
-            </b-list-group>
-        </b-card>
-    </b-col>
+    <b-card no-body style="border-bottom: none; position:absolute; top: 0px; z-index:0; padding-top:56px;" class="h-100 w-100">
+        <b-tabs pills card vertical class="h-100">
+            <b-tab title="Home" active>
+                <b-card-text>
+                    <b-row>
+                        <b-col xl="8" md="12" class="mb-4">
+                            <b-card header="Transactions" header-class="font-weight-bold" header-text-variant="light" header-bg-variant="dark">
+                                <b-list-group v-for="transaction in transactions">
+                                    <b-list-group-item href="#" class="d-flex justify-content-between align-items-center" variant="" v-on:click="transaction.active = !transaction.active">
+                                        <div>
+                                            <b-badge variant="primary" pill>${transaction.id}</b-badge>
+                                            <b-badge>reference: ${transaction.reference}</b-badge>
+                                            <b-badge variant="warning">${transaction.type}</b-badge>
+                                        </div>
 
-    <b-col xl="4" md="12" class="mb-4">
-        <b-card header="Users" header-class="font-weight-bold" header-text-variant="light" header-bg-variant="dark">
-            <b-list-group v-for="user in users">
-                <b-list-group-item href="#" class="d-flex justify-content-between align-items-center" variant="" v-on:click="user.active = !user.active">
-                    <div>
-                        <b-badge variant="primary" pill>${user.id}</b-badge>
-                        <b-badge variant="">${user.firstname} ${user.lastname}</b-badge>
-                        <b-badge variant="">${user.email}</b-badge>
-                    </div>
+                                        <b-badge variant="primary" pill>${transaction.processorName}</b-badge>
+                                    </b-list-group-item>
+                                    <pre v-show="transaction.active" v-highlightjs><code class="php"> ${transaction.data}</code></pre>
+                                </b-list-group>
+                            </b-card>
+                        </b-col>
 
-                    <b-badge variant="primary" pill>${user.processorName}</b-badge>
-                </b-list-group-item>
-                <pre v-show="user.active" v-highlightjs><code class="php">${user}</code></pre>
-            </b-list-group>
-        </b-card>
-    </b-col>
-</b-row>
+                        <b-col xl="4" md="12" class="mb-4">
+                            <b-card header="Users" header-class="font-weight-bold" header-text-variant="light" header-bg-variant="dark">
+                                <b-list-group v-for="user in users">
+                                    <b-list-group-item href="#" class="d-flex justify-content-between align-items-center" variant="" v-on:click="user.active = !user.active">
+                                        <div>
+                                            <b-badge variant="primary" pill>${user.id}</b-badge>
+                                            <b-badge variant="">${user.firstname} ${user.lastname}</b-badge>
+                                            <b-badge variant="">${user.email}</b-badge>
+                                        </div>
+
+                                        <b-badge variant="primary" pill>${user.processorName}</b-badge>
+                                    </b-list-group-item>
+                                    <pre v-show="user.active" v-highlightjs><code class="php">${user}</code></pre>
+                                </b-list-group>
+                            </b-card>
+                        </b-col>
+                    </b-row>
+                </b-card-text></b-tab>
+            <b-tab title="Monitoring">
+                <b-card-text >
+                        <pre v-highlightjs>
+                            <code class="php" style="font-family:monospace;"><div v-for="request in requests">${request}</div></code>
+                        </pre>
+                </b-card-text>
+            </b-tab>
+        </b-tabs>
+    </b-card>
+
+
 {% endblock %}
