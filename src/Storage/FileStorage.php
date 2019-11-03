@@ -26,6 +26,19 @@ class FileStorage implements StorageInterface
         ]);
     }
 
+    public function findTransactions(): array
+    {
+        return array_map(function ($transaction): TransactionInterface {
+            return (new Transaction())
+                ->setId($transaction->id)
+                ->setType($transaction->type)
+                ->setProcessorName($transaction->processorName)
+                ->setData($transaction->extra)
+                ->setReference($transaction->reference)
+                ;
+        }, $this->table(static::TRANSACTION)->findAll());
+    }
+
     public function findTransaction(?int $id, ?string $reference = null): ?TransactionInterface
     {
         $transaction = null;
@@ -131,6 +144,22 @@ class FileStorage implements StorageInterface
     public function updateHook(int $id, string $url, string $status): Hook
     {
         // TODO: Implement updateHook() method.
+    }
+
+    /**
+     * @return UserInterface[]
+     */
+    public function findUsers(): array
+    {
+        return array_map(function ($user): UserInterface {
+            return (new User())
+                ->setId($user->id)
+                ->setFirstname($user->firstname)
+                ->setLastname($user->lastname)
+                ->setEmail($user->email)
+                ->setProcessorName($user->processorName)
+                ;
+        }, $this->table(static::USER)->findAll());
     }
 
     public function findUser(int $id): ?UserInterface

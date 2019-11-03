@@ -1,6 +1,14 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+index:
+    path: /
+    controller: App\Controller\HomeController
+
+monitoring_transactions:
+    path: /api/v1/monitoring/transactions
+    controller: App\Controller\Monitoring\TransactionsController
+
+monitoring_users:
+    path: /api/v1/monitoring/users
+    controller: App\Controller\Monitoring\UsersController
 
 # Lemonway
 lemonway_prepare:
