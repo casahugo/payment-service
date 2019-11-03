@@ -11,6 +11,16 @@ use App\Gateway\UserInterface;
 
 interface StorageInterface
 {
+    /**
+     * @return TransactionInterface[]
+     */
+    public function findTransactions(): array;
+
+    /**
+     * @return UserInterface[]
+     */
+    public function findUsers(): array;
+
     public function findTransaction(?int $id, ?string $reference = null): ?TransactionInterface;
 
     public function saveTransaction(
