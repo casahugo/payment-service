@@ -1,8 +1,8 @@
 install:
-	make clear
 	composer install
 
 run:
+	make install
 	./bin/console server:start 0.0.0.0:5000
 
 stop:
@@ -13,7 +13,6 @@ logs:
 
 clear:
 	bin/console cache:clear
-	rm -r var/database
 
 check:
 	make test
