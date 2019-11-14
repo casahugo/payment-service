@@ -41,6 +41,12 @@ class Hook implements ArrayableInterface
      */
     private $data;
 
+    /** @var null|\DateTime */
+    private $createdAt;
+
+    /** @var null|\DateTime */
+    private $updatedAt;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -113,15 +119,45 @@ class Hook implements ArrayableInterface
         return $this;
     }
 
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         return [
             'id' => $this->getId(),
             'url' => $this->getUrl(),
-            'processorName' => $this->getProcessorName(),
+            'processorName' => preg_replace(
+                '#(App\\\(.*)\\\)#',
+                '',
+                $this->getProcessorName()
+            ),
             'status' => $this->getStatus(),
             'event' => $this->getEvent(),
             'data' => $this->getData(),
+            'createdAt' => $this->getCreatedAt()->format(\DateTime::RFC3339),
+            'updatedAt' => $this->getUpdatedAt()->format(\DateTime::RFC3339),
             'active' => false,
         ];
     }

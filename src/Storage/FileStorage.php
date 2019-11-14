@@ -86,7 +86,8 @@ class FileStorage implements StorageInterface
             ->setProcessorName($processor)
             ->setData($data)
             ->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime());
+            ->setUpdatedAt(new \DateTime())
+        ;
 
         $document = $this->table(static::TRANSACTION)->get($transaction->getId());
 
@@ -95,7 +96,6 @@ class FileStorage implements StorageInterface
         $document->processorName = $transaction->getProcessorName();
         $document->id = $transaction->getId();
         $document->extra = $transaction->getData();
-
         $document->save();
 
         $this->publish(static::TRANSACTION, $transaction->toArray());
@@ -141,7 +141,9 @@ class FileStorage implements StorageInterface
                 ->setStatus($hook->getData()['status'])
                 ->setUrl($hook->getData()['url'])
                 ->setEvent($hook->getData()['event'])
-                ->setData($hook->getData()['extra']);
+                ->setData($hook->getData()['extra'])
+                ->setCreatedAt(new \DateTime($hook->createdAt()))
+                ->setUpdatedAt(new \DateTime($hook->updatedAt()));
         }, $query->resultDocuments());
     }
 
@@ -159,6 +161,8 @@ class FileStorage implements StorageInterface
             ->setStatus($status)
             ->setEvent($event)
             ->setData($data)
+            ->setCreatedAt(new \DateTime())
+            ->setUpdatedAt(new \DateTime());
             ;
 
         $document = $this->table(static::HOOK)->get($hook->getId());
