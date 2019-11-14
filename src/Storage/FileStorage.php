@@ -11,6 +11,7 @@ use App\Entity\Wallet;
 use App\Gateway\TransactionInterface;
 use App\Gateway\UserInterface;
 use Filebase\Database;
+use Filebase\Document;
 use Symfony\Component\Mercure\Publisher;
 use Symfony\Component\Mercure\Update;
 
@@ -31,15 +32,21 @@ class FileStorage implements StorageInterface
 
     public function findTransactions(): array
     {
-        return array_map(function ($transaction): TransactionInterface {
+        return \array_map(function (Document $transaction): TransactionInterface {
             return (new Transaction())
-                ->setId($transaction['id'])
-                ->setType($transaction['type'])
-                ->setProcessorName($transaction['processorName'])
-                ->setData($transaction['extra'])
-                ->setReference($transaction['reference'])
+                ->setId($transaction->getData()['id'])
+                ->setType($transaction->getData()['type'])
+                ->setProcessorName($transaction->getData()['processorName'])
+                ->setData($transaction->getData()['extra'])
+                ->setReference($transaction->getData()['reference'])
+                ->setCreatedAt(new \DateTime($transaction->createdAt()))
+                ->setUpdatedAt(new \DateTime($transaction->updatedAt()))
                 ;
-        }, $this->table(static::TRANSACTION)->query()->orderBy('__created_at', 'DESC')->results());
+        }, $this->table(static::TRANSACTION)
+            ->query()
+            ->orderBy('__created_at', 'DESC')
+            ->resultDocuments()
+        );
     }
 
     public function findTransaction(?int $id, ?string $reference = null): ?TransactionInterface
@@ -62,6 +69,8 @@ class FileStorage implements StorageInterface
             ->setProcessorName($transaction['processorName'])
             ->setData($transaction['extra'])
             ->setReference($transaction['reference'])
+           // ->setCreatedAt($transaction['createdAt'])
+           // ->setUpdatedAt($transaction['updatedAt'])
             ;
     }
 
@@ -76,7 +85,10 @@ class FileStorage implements StorageInterface
             ->setReference($reference)
             ->setType($type)
             ->setProcessorName($processor)
-            ->setData($data);
+            ->setData($data)
+            ->setCreatedAt(new \DateTime())
+            ->setUpdatedAt(new \DateTime())
+            ;
 
         $document = $this->table(static::TRANSACTION)->get($transaction->getId());
 
@@ -110,28 +122,48 @@ class FileStorage implements StorageInterface
             ;
     }
 
-    public function findHooks(string $processorName): array
+    public function findHooks(string $processorName = null, string $event = null): array
     {
-        $hooks = $this->table(static::HOOK)->query()->where(['processorName' => $processorName])->results();
+        $query = $this
+            ->table(static::HOOK)
+            ->query()
+            ->orderBy('__created_at', 'DESC')
+            ;
 
-        return array_map(function ($hook): Hook {
+        if (\is_string($processorName)) {
+            $query->where(['processorName' => $processorName]);
+        }
+
+        if (\is_string($event)) {
+            $query->where(['event' => $event]);
+        }
+
+        return \array_map(function (Document $hook): Hook {
             return (new Hook())
-                ->setId($hook['id'])
-                ->setProcessorName($hook['processorName'])
-                ->setStatus($hook['status'])
-                ->setUrl($hook['url'])
-                ->setEvent($hook['event'])
+                ->setId($hook->getData()['id'])
+                ->setProcessorName($hook->getData()['processorName'])
+                ->setStatus($hook->getData()['status'])
+                ->setUrl($hook->getData()['url'])
+                ->setEvent($hook->getData()['event'])
+                ->setData($hook->getData()['extra'])
                 ;
-        }, $hooks);
+        }, $query->resultDocuments());
     }
 
-    public function saveHook(string $url, string $status, string $event): Hook
-    {
+    public function saveHook(
+        string $url,
+        string $status,
+        string $event,
+        string $processor,
+        array $data = []
+    ): Hook {
         $hook = (new Hook())
             ->setId(rand())
             ->setUrl($url)
+            ->setProcessorName($processor)
             ->setStatus($status)
             ->setEvent($event)
+            ->setData($data);
             ;
 
         $document = $this->table(static::HOOK)->get($hook->getId());
@@ -141,7 +173,10 @@ class FileStorage implements StorageInterface
         $document->status = $hook->getStatus();
         $document->processorName = $hook->getProcessorName();
         $document->event = $hook->getEvent();
+        $document->extra = $hook->getData();
         $document->save();
+
+        $this->publish(static::HOOK, $hook->toArray());
 
         return $hook;
     }
@@ -282,7 +317,7 @@ class FileStorage implements StorageInterface
     {
         call_user_func(
             $this->publisher,
-            new Update($name, json_encode(['data' => $data]))
+            new Update($name, json_encode(['data' => $data], JSON_THROW_ON_ERROR))
         );
 
         return $this;

@@ -19,7 +19,11 @@ class UsersController
                     'lastname' => $user->getLastname(),
                     'firstname' => $user->getFirstname(),
                     'email' => $user->getEmail(),
-                    'processorName' => $user->getProcessorName(),
+                    'processorName' => preg_replace(
+                        '#(App\\\(.*)\\\)#',
+                        '',
+                        $user->getProcessorName()
+                    ),
                     'active' => false,
                 ];
             }, $storage->findUsers())

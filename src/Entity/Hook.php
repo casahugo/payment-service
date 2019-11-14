@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use App\ArrayableInterface;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\HookRepository")
  */
-class Hook
+class Hook implements ArrayableInterface
 {
     /**
      * @ORM\Id()
@@ -33,6 +35,11 @@ class Hook
      * @ORM\Column(type="string", length=50)
      */
     private $processorName;
+
+    /**
+     * @ORM\Column(type="text" nullable=true)
+     */
+    private $data;
 
     public function getId(): ?int
     {
@@ -92,5 +99,30 @@ class Hook
         $this->processorName = $processorName;
 
         return $this;
+    }
+
+    public function getData(): ?array
+    {
+        return \unserialize($this->data);
+    }
+
+    public function setData(array $data): self
+    {
+        $this->data = \serialize($data);
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'url' => $this->getUrl(),
+            'processorName' => $this->getProcessorName(),
+            'status' => $this->getStatus(),
+            'event' => $this->getEvent(),
+            'data' => $this->getData(),
+            'active' => false,
+        ];
     }
 }

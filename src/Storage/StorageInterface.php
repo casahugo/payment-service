@@ -32,9 +32,9 @@ interface StorageInterface
 
     public function findHook(int $id): ?Hook;
 
-    public function findHooks(string $processorName): array;
+    public function findHooks(string $processorName = null, string $event = null): array;
 
-    public function saveHook(string $url, string $status, string $event): Hook;
+    public function saveHook(string $url, string $status, string $event, string $processor, array $data = []): Hook;
 
     public function updateHook(int $id, string $url, string $status): Hook;
 

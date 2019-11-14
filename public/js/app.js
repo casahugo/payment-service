@@ -1,5 +1,6 @@
 const eventTransaction = new EventSource('http://localhost:5001/hub?topic=' + encodeURIComponent('transaction'));
 const eventRequest = new EventSource('http://localhost:5001/hub?topic=' + encodeURIComponent('request'));
+const eventHook = new EventSource('http://localhost:5001/hub?topic=' + encodeURIComponent('hook'));
 
 Vue.directive('highlightjs', {
     deep: true,
@@ -27,14 +28,25 @@ Vue.directive('highlightjs', {
     }
 });
 
+Vue.directive('momentjs', {
+    bind: function (el) {
+        el.textContent = moment(el.textContent, "YYYYMMDD").fromNow();
+    }
+});
+
 new Vue({
     el: '#app',
     delimiters: ['${', '}'],
     data : function() {
         return {
             load: false,
+            menu: {
+              home: 1,
+              monitoring: 0,
+            },
             requests: ['listening...'],
             transactions: [],
+            hooks: [],
             users: [],
         }
     },
@@ -46,6 +58,10 @@ new Vue({
             .then(response => (this.transactions = response.data.items));
 
         axios
+            .get('api/v1/monitoring/hooks')
+            .then(response => (this.hooks = response.data.items));
+
+        axios
             .get('api/v1/monitoring/users')
             .then(response => (this.users = response.data.items));
 
@@ -55,6 +71,10 @@ new Vue({
 
         eventRequest.onmessage = event => {
             this.requests.push(new Object(JSON.parse(event.data)));
+        };
+
+        eventHook.onmessage = event => {
+            this.hooks.push(new Object(JSON.parse(event.data)));
         };
     },
 });

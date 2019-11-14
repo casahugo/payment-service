@@ -3,27 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Paymock{% endblock %}</title>
+    <link rel="icon" href="/img/favicon/favicon.ico" />
     {% block stylesheets %}{% endblock %}
-    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="css/bootstrap-vue.min.css" />
-    <link rel="stylesheet" href="css/highlight.min.css">
-    <link rel="stylesheet" href="css/app.css">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap-vue.min.css" />
+    <link rel="stylesheet" href="/css/highlight.min.css">
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
     <div id="app" style="display: none;" v-show="load">
-        <b-navbar toggleable="lg" type="dark" variant="dark" style="z-index: 100">
-            <b-navbar-brand href="/">Paymock</b-navbar-brand>
-        </b-navbar>
-
         <div>
             {% block body %}{% endblock %}
         </div>
     </div>
-    <script src="js/vue.min.js"></script>
-    <script src="js/bootstrap-vue.min.js"></script>
-    <script src="js/axios.min.js"></script>
-    <script src="js/highlight.min.js"></script>
-    <script src="js/app.js"></script>
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/bootstrap-vue.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/highlight.min.js"></script>
+    <script src="/js/moment.min.js"></script>
+    <script src="/js/app.js"></script>
     {% block javascripts %}{% endblock %}
 </body>
 </html>
