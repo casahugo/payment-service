@@ -22,7 +22,7 @@ class FileStorage implements StorageInterface
     private const WALLET = 'wallet';
     private const HOOK = 'hook';
 
-    /** @var Publisher  */
+    /** @var Publisher */
     private $publisher;
 
     public function __construct(Publisher $publisher)
@@ -40,13 +40,12 @@ class FileStorage implements StorageInterface
                 ->setData($transaction->getData()['extra'])
                 ->setReference($transaction->getData()['reference'])
                 ->setCreatedAt(new \DateTime($transaction->createdAt()))
-                ->setUpdatedAt(new \DateTime($transaction->updatedAt()))
-                ;
-        }, $this->table(static::TRANSACTION)
+                ->setUpdatedAt(new \DateTime($transaction->updatedAt()));
+        }, $this
+            ->table(static::TRANSACTION)
             ->query()
             ->orderBy('__created_at', 'DESC')
-            ->resultDocuments()
-        );
+            ->resultDocuments());
     }
 
     public function findTransaction(?int $id, ?string $reference = null): ?TransactionInterface
@@ -69,8 +68,8 @@ class FileStorage implements StorageInterface
             ->setProcessorName($transaction['processorName'])
             ->setData($transaction['extra'])
             ->setReference($transaction['reference'])
-           // ->setCreatedAt($transaction['createdAt'])
-           // ->setUpdatedAt($transaction['updatedAt'])
+            // ->setCreatedAt($transaction['createdAt'])
+            // ->setUpdatedAt($transaction['updatedAt'])
             ;
     }
 
@@ -87,8 +86,7 @@ class FileStorage implements StorageInterface
             ->setProcessorName($processor)
             ->setData($data)
             ->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime())
-            ;
+            ->setUpdatedAt(new \DateTime());
 
         $document = $this->table(static::TRANSACTION)->get($transaction->getId());
 
@@ -118,8 +116,7 @@ class FileStorage implements StorageInterface
             ->setProcessorName($hook['processorName'])
             ->setStatus($hook['status'])
             ->setUrl($hook['url'])
-            ->setEvent($hook['event'])
-            ;
+            ->setEvent($hook['event']);
     }
 
     public function findHooks(string $processorName = null, string $event = null): array
@@ -127,8 +124,7 @@ class FileStorage implements StorageInterface
         $query = $this
             ->table(static::HOOK)
             ->query()
-            ->orderBy('__created_at', 'DESC')
-            ;
+            ->orderBy('__created_at', 'DESC');
 
         if (\is_string($processorName)) {
             $query->where(['processorName' => $processorName]);
@@ -145,8 +141,7 @@ class FileStorage implements StorageInterface
                 ->setStatus($hook->getData()['status'])
                 ->setUrl($hook->getData()['url'])
                 ->setEvent($hook->getData()['event'])
-                ->setData($hook->getData()['extra'])
-                ;
+                ->setData($hook->getData()['extra']);
         }, $query->resultDocuments());
     }
 
@@ -163,7 +158,7 @@ class FileStorage implements StorageInterface
             ->setProcessorName($processor)
             ->setStatus($status)
             ->setEvent($event)
-            ->setData($data);
+            ->setData($data)
             ;
 
         $document = $this->table(static::HOOK)->get($hook->getId());
@@ -197,8 +192,7 @@ class FileStorage implements StorageInterface
                 ->setFirstname($user->firstname)
                 ->setLastname($user->lastname)
                 ->setEmail($user->email)
-                ->setProcessorName($user->processorName)
-                ;
+                ->setProcessorName($user->processorName);
         }, $this->table(static::USER)->findAll());
     }
 
@@ -220,8 +214,7 @@ class FileStorage implements StorageInterface
             ->setCity($user['city'])
             ->setZipcode($user['zipcode'])
             ->setAddress($user['address'])
-            ->setBirthday($user['birthday'])
-            ;
+            ->setBirthday($user['birthday']);
     }
 
     public function findUserByEmail(string $email): ?UserInterface
@@ -243,8 +236,7 @@ class FileStorage implements StorageInterface
             ->setCity($user['city'])
             ->setZipcode($user['zipcode'])
             ->setAddress($user['address'])
-            ->setBirthday($user['birthday'])
-            ;
+            ->setBirthday($user['birthday']);
     }
 
     public function saveUser(UserInterface $user): UserInterface
@@ -260,8 +252,7 @@ class FileStorage implements StorageInterface
                 ->setCity('')
                 ->setZipcode('')
                 ->setAddress('')
-                ->setBirthday('')
-            ;
+                ->setBirthday('');
         }
 
         $document = $this->table(static::USER)->get($user->getId());
@@ -286,8 +277,7 @@ class FileStorage implements StorageInterface
             ->setId(rand())
             ->setUserId($userId)
             ->setCurrency($currency)
-            ->setDescription($description)
-        ;
+            ->setDescription($description);
 
         $document = $this->table(static::WALLET)->get($wallet->getId());
         $document->id = $wallet->getId();
@@ -308,8 +298,7 @@ class FileStorage implements StorageInterface
                 ->setId($wallet['id'])
                 ->setUserId($wallet['userId'])
                 ->setCurrency($wallet['currency'])
-                ->setDescription($wallet['description'])
-                ;
+                ->setDescription($wallet['description']);
         }, $wallets);
     }
 
