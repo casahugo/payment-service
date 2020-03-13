@@ -27,3 +27,4 @@ phpstan:
 
 phpcs:
 	docker-compose exec php ./vendor/bin/phpcs;
+

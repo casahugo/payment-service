@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use App\ArrayableInterface;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\HookRepository")
  */
-class Hook
+class Hook implements ArrayableInterface
 {
     /**
      * @ORM\Id()
@@ -33,6 +35,17 @@ class Hook
      * @ORM\Column(type="string", length=50)
      */
     private $processorName;
+
+    /**
+     * @ORM\Column(type="text" nullable=true)
+     */
+    private $data;
+
+    /** @var null|\DateTime */
+    private $createdAt;
+
+    /** @var null|\DateTime */
+    private $updatedAt;
 
     public function getId(): ?int
     {
@@ -92,5 +105,60 @@ class Hook
         $this->processorName = $processorName;
 
         return $this;
+    }
+
+    public function getData(): ?array
+    {
+        return \unserialize($this->data);
+    }
+
+    public function setData(array $data): self
+    {
+        $this->data = \serialize($data);
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'url' => $this->getUrl(),
+            'processorName' => preg_replace(
+                '#(App\\\(.*)\\\)#',
+                '',
+                $this->getProcessorName()
+            ),
+            'status' => $this->getStatus(),
+            'event' => $this->getEvent(),
+            'data' => $this->getData(),
+            'createdAt' => $this->getCreatedAt()->format(\DateTime::RFC3339),
+            'updatedAt' => $this->getUpdatedAt()->format(\DateTime::RFC3339),
+            'active' => false,
+        ];
     }
 }

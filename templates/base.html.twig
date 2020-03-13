@@ -3,148 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Paymock{% endblock %}</title>
+    <link rel="icon" href="/img/favicon/favicon.ico" />
     {% block stylesheets %}{% endblock %}
-    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
-    <style>
-        .hljs {
-            display: block;
-            overflow-x: auto;
-            padding: 0.5em;
-            background: #282a36;
-        }
-
-        .hljs-built_in,
-        .hljs-selector-tag,
-        .hljs-section,
-        .hljs-link {
-            color: #8be9fd;
-        }
-
-        .hljs-keyword {
-            color: #ff79c6;
-        }
-
-        .hljs,
-        .hljs-subst {
-            color: #f8f8f2;
-        }
-
-        .hljs-title {
-            color: #50fa7b;
-        }
-
-        .hljs-string,
-        .hljs-meta,
-        .hljs-name,
-        .hljs-type,
-        .hljs-attr,
-        .hljs-symbol,
-        .hljs-bullet,
-        .hljs-addition,
-        .hljs-variable,
-        .hljs-template-tag,
-        .hljs-template-variable {
-            color: #f1fa8c;
-        }
-
-        .hljs-comment,
-        .hljs-quote,
-        .hljs-deletion {
-            color: #6272a4;
-        }
-
-        .hljs-keyword,
-        .hljs-selector-tag,
-        .hljs-literal,
-        .hljs-title,
-        .hljs-section,
-        .hljs-doctag,
-        .hljs-type,
-        .hljs-name,
-        .hljs-strong {
-            font-weight: bold;
-        }
-
-        .hljs-literal,
-        .hljs-number {
-            color: #bd93f9;
-        }
-
-        .hljs-emphasis {
-            font-style: italic;
-        }
-    </style>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap-vue.min.css" />
+    <link rel="stylesheet" href="/css/highlight.min.css">
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-<div id="app">
-    <b-navbar toggleable="lg" type="dark" variant="dark" class="mb-4">
-        <b-navbar-brand href="#">Paymock</b-navbar-brand>
-    </b-navbar>
-
-    <b-container fluid="true">
-        <b-col>
+    <div id="app" style="display: none;" v-show="load">
+        <div>
             {% block body %}{% endblock %}
-        </b-col>
-    </b-container>
-</div>
-<!-- Load polyfills to support older browsers -->
-<script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
-
-<!-- Load Vue followed by BootstrapVue -->
-<script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
-<script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
-
-<script>
-    Vue.directive('highlightjs', {
-        deep: true,
-        bind: function (el, binding) {
-            // on first bind, highlight all targets
-            let targets = el.querySelectorAll('code')
-            targets.forEach((target) => {
-                // if a value is directly assigned to the directive, use this
-                // instead of the element content.
-                if (binding.value) {
-                    target.textContent = binding.value
-                }
-                hljs.highlightBlock(target)
-            })
-        },
-        componentUpdated: function (el, binding) {
-            // after an update, re-fill the content and then highlight
-            let targets = el.querySelectorAll('code')
-            targets.forEach((target) => {
-                if (binding.value) {
-                    target.textContent = binding.value
-                    hljs.highlightBlock(target)
-                }
-            })
-        }
-    })
-
-    new Vue({
-        el: '#app',
-        delimiters: ['${', '}'],
-        data : function() {
-           return {
-               transactions: null,
-               users: null,
-           }
-        },
-        mounted: function() {
-            axios
-                .get('api/v1/monitoring/transactions')
-                .then(response => (this.transactions = response.data.items));
-
-            axios
-                .get('api/v1/monitoring/users')
-                .then(response => (this.users = response.data.items))
-        },
-    });
-</script>
-{% block javascripts %}{% endblock %}
+        </div>
+    </div>
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/bootstrap-vue.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/highlight.min.js"></script>
+    <script src="/js/moment.min.js"></script>
+    <script src="/js/app.js"></script>
+    {% block javascripts %}{% endblock %}
 </body>
 </html>

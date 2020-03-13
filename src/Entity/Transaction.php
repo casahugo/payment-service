@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\ArrayableInterface;
 use App\Gateway\TransactionInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
  */
-class Transaction implements TransactionInterface
+class Transaction implements TransactionInterface, ArrayableInterface
 {
     /**
      * @ORM\Id()
@@ -35,6 +36,12 @@ class Transaction implements TransactionInterface
      * @ORM\Column(type="text", nullable=true)
      */
     private $data;
+
+    /** @var null|\DateTime */
+    private $createdAt;
+
+    /** @var null|\DateTime */
+    private $updatedAt;
 
     public function getId(): ?int
     {
@@ -98,5 +105,43 @@ class Transaction implements TransactionInterface
         $this->data = serialize($data);
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'reference' => $this->getReference(),
+            'processorName' => preg_replace('#(App\\\(.*)\\\)#', '', $this->getProcessorName()),
+            'type' => $this->getType(),
+            'data' => $this->getData(),
+            'createdAt' => $this->getCreatedAt()->format(\DateTime::RFC3339),
+            'updatedAt' => $this->getUpdatedAt()->format(\DateTime::RFC3339),
+            'active' => false,
+        ];
     }
 }
